@@ -7,135 +7,68 @@
 <title>History Timeline Explorer — DH Lab</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
 <style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-:root {
-  --bg: #0D1117; --bg-card: #161B22; --bg-mid: #1C2128;
-  --gold: #C9A84C; --gold-dim: rgba(201,168,76,0.15); --gold-bright: #E6C96A;
-  --white: #F0EDE8; --muted: rgba(240,237,232,0.52); --border: rgba(240,237,232,0.08);
-  --font-display: 'Space Grotesk', sans-serif;
-  --font-serif: 'Playfair Display', serif;
-  --font-body: 'Inter', sans-serif;
-}
-[data-theme="light"] {
-  --bg: #F7F5F0; --bg-card: #FFFFFF; --bg-mid: #F0EDE8;
-  --gold: #8B6914; --gold-dim: rgba(139,105,20,0.10); --gold-bright: #6B4F0E;
-  --white: #1A1F2B; --muted: rgba(26,31,43,0.55); --border: rgba(26,31,43,0.10);
-}
-body { background: var(--bg); color: var(--white); font-family: var(--font-body); min-height: 100vh; transition: background 0.25s, color 0.25s; }
-
-header {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 1rem 2rem; border-bottom: 1px solid var(--border);
-  position: sticky; top: 0;
-  background: color-mix(in srgb, var(--bg) 92%, transparent);
-  backdrop-filter: blur(12px); z-index: 100; gap: 1rem; flex-wrap: wrap;
-}
-.logo { display: flex; align-items: center; gap: 8px; text-decoration: none; color: var(--white); font-family: var(--font-display); font-weight: 700; font-size: 1rem; }
-.dh-chip { width: 28px; height: 28px; background: #1B2A4A; border-radius: 6px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.dh-chip img { width: 17px; height: 17px; object-fit: contain; }
-.site-nav { display: flex; gap: 4px; background: var(--bg-card); padding: 4px; border-radius: 10px; border: 1px solid var(--border); flex-wrap: wrap; }
-.nav-link { font-size: 12px; font-weight: 500; padding: 5px 12px; border-radius: 7px; text-decoration: none; color: var(--muted); transition: all 0.18s; white-space: nowrap; }
-.nav-link.active { background: var(--bg-mid); color: var(--white); }
-.nav-link:hover:not(.active) { color: var(--white); }
-.header-right { display: flex; align-items: center; gap: 8px; }
-.badge { font-size: 11px; font-weight: 500; background: var(--gold-dim); color: var(--gold-bright); border: 1px solid color-mix(in srgb, var(--gold) 30%, transparent); border-radius: 20px; padding: 4px 12px; }
-.theme-btn { width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); color: var(--white); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: border-color 0.18s; }
-.theme-btn:hover { border-color: var(--gold); }
-
-/* YEAR SELECTOR */
-.year-hero {
-  background: var(--bg-card);
-  border-bottom: 1px solid var(--border);
-  padding: 2.5rem 2rem;
-  text-align: center;
-}
-.year-label { font-size: 10px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold-bright); margin-bottom: 1rem; }
-.year-display {
-  font-family: var(--font-serif);
-  font-size: clamp(3rem, 10vw, 6rem);
-  font-weight: 700;
-  color: var(--white);
-  line-height: 1;
-  margin-bottom: 0.5rem;
-  cursor: pointer;
-  display: inline-block;
-}
-.year-era { font-size: 13px; color: var(--muted); margin-bottom: 1.5rem; }
-.year-slider-wrap { max-width: 700px; margin: 0 auto; }
-.year-slider {
-  -webkit-appearance: none; width: 100%; height: 3px;
-  background: linear-gradient(to right, var(--gold) 0%, var(--gold) var(--pct, 70%), var(--border) var(--pct, 70%));
-  border-radius: 4px; outline: none; cursor: pointer;
-}
-.year-slider::-webkit-slider-thumb {
-  -webkit-appearance: none; width: 20px; height: 20px;
-  background: var(--gold); border-radius: 50%;
-  box-shadow: 0 0 0 4px var(--gold-dim);
-}
-.era-labels { display: flex; justify-content: space-between; margin-top: 8px; font-size: 10px; color: var(--muted); }
-.quick-years { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; margin-top: 1.25rem; }
-.quick-yr {
-  font-size: 12px; font-weight: 500; padding: 5px 12px;
-  border: 1px solid var(--border); border-radius: 20px;
-  background: transparent; color: var(--muted); cursor: pointer;
-  transition: all 0.18s;
-}
-.quick-yr:hover { border-color: var(--gold); color: var(--gold-bright); }
-.quick-yr.active { background: var(--gold-dim); border-color: var(--gold); color: var(--gold-bright); }
-
-/* CONTENT */
-.content { max-width: 1200px; margin: 0 auto; padding: 2rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
-
-.section-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; }
-.section-card.full { grid-column: 1 / -1; }
-.section-title {
-  font-family: var(--font-display); font-size: 10px; font-weight: 600;
-  letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted);
-  margin-bottom: 1rem; padding-bottom: 0.6rem; border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; gap: 8px;
-}
-.section-title-icon { font-size: 14px; }
-
-/* LEADERS */
-.leaders-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 8px; }
-.leader-card {
-  background: var(--bg-mid); border-radius: 10px; padding: 12px;
-  border-left: 2px solid var(--s-color, var(--border));
-}
-.leader-country { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 3px; }
-.leader-name { font-size: 13px; font-weight: 600; line-height: 1.3; }
-.leader-title { font-size: 11px; color: var(--muted); margin-top: 2px; }
-
-/* EVENTS */
-.events-list { display: flex; flex-direction: column; gap: 10px; }
-.event-item { display: flex; gap: 12px; align-items: flex-start; }
-.event-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--gold); flex-shrink: 0; margin-top: 5px; }
-.event-body { flex: 1; }
-.event-title { font-size: 13px; font-weight: 600; line-height: 1.4; }
-.event-desc { font-size: 12px; color: var(--muted); margin-top: 2px; line-height: 1.5; }
-.event-tag { font-size: 10px; padding: 2px 7px; border-radius: 4px; font-weight: 500; display: inline-block; margin-top: 4px; }
-
-/* CONTEXT */
-.context-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
-.context-item { background: var(--bg-mid); border-radius: 10px; padding: 12px; }
-.context-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
-.context-value { font-family: var(--font-display); font-size: 15px; font-weight: 600; }
-
-/* LOADING */
-.loading { text-align: center; padding: 3rem; color: var(--muted); font-size: 14px; }
-.loading-spinner { font-size: 2rem; display: block; margin-bottom: 1rem; animation: spin 1.5s linear infinite; }
-@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-
-@media (max-width: 700px) {
-  .content { grid-template-columns: 1fr; }
-  .section-card.full { grid-column: 1; }
-  .context-grid { grid-template-columns: 1fr 1fr; }
-  .leaders-grid { grid-template-columns: 1fr 1fr; }
-}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#111827;--bg-card:#1F2937;--bg-mid:#374151;--gold:#C9A84C;--gold-dim:rgba(201,168,76,0.15);--gold-bright:#E6C96A;--white:#F0EDE8;--muted:rgba(240,237,232,0.52);--border:rgba(240,237,232,0.08);--font-display:"Space Grotesk",sans-serif;--font-serif:"Playfair Display",serif;--font-body:"Inter",sans-serif}
+[data-theme="light"]{--bg:#F7F5F0;--bg-card:#FFFFFF;--bg-mid:#F0EDE8;--gold:#8B6914;--gold-dim:rgba(139,105,20,0.10);--gold-bright:#6B4F0E;--white:#1A1F2B;--muted:rgba(26,31,43,0.55);--border:rgba(26,31,43,0.10)}
+body{background:var(--bg);color:var(--white);font-family:var(--font-body);min-height:100vh;transition:background .25s,color .25s}
+header{display:flex;align-items:center;justify-content:space-between;padding:1rem 2rem;border-bottom:1px solid var(--border);position:sticky;top:0;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(12px);z-index:100;gap:1rem;flex-wrap:wrap}
+.logo{display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--white);font-family:var(--font-display);font-weight:700;font-size:1rem}
+.dh-chip{width:28px;height:28px;background:#1B2A4A;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.dh-chip img{width:17px;height:17px;object-fit:contain}
+.site-nav{display:flex;gap:4px;background:var(--bg-card);padding:4px;border-radius:10px;border:1px solid var(--border);flex-wrap:wrap}
+.nav-link{font-size:12px;font-weight:500;padding:5px 12px;border-radius:7px;text-decoration:none;color:var(--muted);transition:all .18s;white-space:nowrap}
+.nav-link.active{background:var(--bg-mid);color:var(--white)}
+.nav-link:hover:not(.active){color:var(--white)}
+.header-right{display:flex;align-items:center;gap:8px}
+.badge{font-size:11px;font-weight:500;background:var(--gold-dim);color:var(--gold-bright);border:1px solid color-mix(in srgb,var(--gold) 30%,transparent);border-radius:20px;padding:4px 12px}
+.theme-btn{width:32px;height:32px;border-radius:8px;border:1px solid var(--border);background:var(--bg-card);color:var(--white);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px}
+.theme-btn:hover{border-color:var(--gold)}
+.year-hero{background:var(--bg-card);border-bottom:1px solid var(--border);padding:2rem 2rem 1.5rem;text-align:center}
+.year-label{font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-bright);margin-bottom:.75rem}
+.year-display{font-family:var(--font-serif);font-size:clamp(3rem,10vw,5.5rem);font-weight:700;color:var(--white);line-height:1;margin-bottom:.4rem}
+.year-era{font-size:13px;color:var(--muted);margin-bottom:1.25rem}
+.topic-tabs{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-bottom:1.25rem}
+.topic-tab{font-size:11px;font-weight:600;padding:5px 14px;border:1px solid var(--border);border-radius:20px;background:transparent;color:var(--muted);cursor:pointer;transition:all .18s}
+.topic-tab.active{background:var(--gold-dim);border-color:var(--gold);color:var(--gold-bright)}
+.topic-tab:hover:not(.active){color:var(--white)}
+.year-grid{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;max-width:900px;margin:0 auto}
+.year-btn{font-size:12px;font-weight:500;padding:5px 11px;border:1px solid var(--border);border-radius:8px;background:transparent;color:var(--muted);cursor:pointer;transition:all .18s}
+.year-btn:hover{border-color:var(--gold);color:var(--gold-bright)}
+.year-btn.active{background:var(--gold-dim);border-color:var(--gold);color:var(--gold-bright)}
+.year-btn.russia{border-color:rgba(239,68,68,.4);color:rgba(252,165,165,.7)}
+.year-btn.russia.active{background:rgba(239,68,68,.15);border-color:#EF4444;color:#FCA5A5}
+.year-btn.britain{border-color:rgba(59,130,246,.4);color:rgba(147,197,253,.7)}
+.year-btn.britain.active{background:rgba(59,130,246,.15);border-color:#3B82F6;color:#93C5FD}
+.year-btn.civil-rights{border-color:rgba(168,85,247,.4);color:rgba(216,180,254,.7)}
+.year-btn.civil-rights.active{background:rgba(168,85,247,.15);border-color:#A855F7;color:#D8B4FE}
+.legend{display:flex;gap:16px;justify-content:center;margin-top:10px;flex-wrap:wrap}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted)}
+.legend-dot{width:8px;height:8px;border-radius:50%}
+.content{max-width:1200px;margin:0 auto;padding:1.5rem 2rem;display:grid;grid-template-columns:1fr 1fr;gap:1.25rem}
+.section-card{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:1.5rem}
+.section-card.full{grid-column:1/-1}
+.section-title{font-family:var(--font-display);font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:1rem;padding-bottom:.6rem;border-bottom:1px solid var(--border)}
+.snapshot{font-size:14px;color:var(--muted);line-height:1.75}
+.snapshot strong{color:var(--white);font-weight:600}
+.leaders-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.leader-card{background:var(--bg-mid);border-radius:10px;padding:11px 12px;border-left:2px solid var(--s-color,var(--border))}
+.leader-country{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px}
+.leader-name{font-size:13px;font-weight:600;line-height:1.3}
+.leader-title{font-size:11px;color:var(--muted);margin-top:2px}
+.events-list{display:flex;flex-direction:column;gap:12px}
+.event-item{display:flex;gap:12px;align-items:flex-start}
+.event-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px}
+.event-title{font-size:13px;font-weight:600;line-height:1.4;margin-bottom:2px}
+.event-desc{font-size:12px;color:var(--muted);line-height:1.55}
+.event-tag{font-size:10px;padding:2px 7px;border-radius:4px;font-weight:500;display:inline-block;margin-top:4px}
+.syllabus-box{background:var(--gold-dim);border:1px solid color-mix(in srgb,var(--gold) 30%,transparent);border-radius:10px;padding:12px 14px}
+.syllabus-label{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-bright);margin-bottom:4px}
+.syllabus-text{font-size:13px;color:var(--muted);line-height:1.6}
+.no-data{text-align:center;padding:3rem;color:var(--muted);font-size:14px;grid-column:1/-1}
+@media(max-width:700px){.content{grid-template-columns:1fr}.section-card.full{grid-column:1}.leaders-grid{grid-template-columns:1fr 1fr}}
 </style>
 </head>
 <body>
-
 <header>
   <a href="../index.html" class="logo">
     <div class="dh-chip"><img src="data:image/png;base64,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CZEOAAAASYh0AAAASEKkAwAAQBIiHQAAAJIQ6QAAAJCESAcAAIAkRDoAAAAkIdIBAAAgCZEOAAAASYh0AAAASEKkAwAAQBIiHQAAAJIQ6QAAAJCESAcAAIAkRDoAAAAkIdIBAAAgCZEOAAAASYh0AAAASEKkAwAAQBIiHQAAAJIQ6QAAAJCESAcAAIAkRDoAAAAkIdIBAAAgCZEOAAAASYh0AAAASEKkAwAAQBIiHQAAAJIQ6QAAAJCESAcAAIAkRDoAAAAkIdIBAAAgCZEOAAAASYh0AAAASEKkAwAAQBIiHQAAAJIQ6QAAAJCESAcAAIAkRDoAAAAkIdIBAAAgCZEOAAAASYh0AAAASEKkAwAAQBIiHQAAAJIQ6QAAAJCESAcAAIAkRDoAAAAkIdIBAAAgCZEOAAAASYh0AAAASEKkAwAAQBIiHQAAAJIQ6QAAAJCESAcAAIAkRDoAAAAkIdIBAAAgCZEOAAAASYh0AAAASEKkAwAAQBIiHQAAAJIQ6QAAAJCESAcAAIAkRDoAAMD/b7+OCQAAABAG2T+1NXZACyBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAAKBg2wGMDPl5BT36QAAAAABJRU5ErkJggg==" alt="DH" style="width:17px;height:17px;object-fit:contain;"></div>
@@ -147,242 +80,95 @@ header {
     <a href="../econ/index.html" class="nav-link">Econ Lab</a>
   </nav>
   <div class="header-right">
-    <button class="theme-btn" id="theme-toggle-btn" onclick="toggleTheme()">🌙</button>
-    <span class="badge">History</span>
+    <button class="theme-btn" id="theme-toggle-btn" onclick="toggleTheme()">&#127769;</button>
+    <span class="badge">Edexcel 9HI0</span>
   </div>
 </header>
 
 <div class="year-hero">
-  <p class="year-label">History Timeline Explorer</p>
-  <div class="year-display" id="year-display">1944</div>
-  <p class="year-era" id="year-era">Mid-20th Century · Second World War era</p>
-  <div class="year-slider-wrap">
-    <input type="range" class="year-slider" id="year-slider" min="1800" max="2024" step="1" value="1944" oninput="onYearChange(this.value)">
-    <div class="era-labels"><span>1800</span><span>1850</span><span>1900</span><span>1950</span><span>2000</span><span>2024</span></div>
+  <p class="year-label">History Timeline Explorer — Edexcel 9HI0 aligned</p>
+  <div class="year-display" id="year-display">1905</div>
+  <p class="year-era" id="year-era">Early 20th Century &middot; Russia on the brink</p>
+  <div class="topic-tabs">
+    <button class="topic-tab active" onclick="filterTopic(this,'all')">All years</button>
+    <button class="topic-tab" onclick="filterTopic(this,'russia')">&#127479;&#127482; Communist States</button>
+    <button class="topic-tab" onclick="filterTopic(this,'britain')">&#127468;&#127463; Protest &amp; Reform</button>
+    <button class="topic-tab" onclick="filterTopic(this,'civil-rights')">&#9994; Civil Rights</button>
   </div>
-  <div class="quick-years">
-    <button class="quick-yr" onclick="setYear(1815)">1815</button>
-    <button class="quick-yr" onclick="setYear(1848)">1848</button>
-    <button class="quick-yr" onclick="setYear(1914)">1914</button>
-    <button class="quick-yr" onclick="setYear(1929)">1929</button>
-    <button class="quick-yr active" onclick="setYear(1944)">1944</button>
-    <button class="quick-yr" onclick="setYear(1961)">1961</button>
-    <button class="quick-yr" onclick="setYear(1989)">1989</button>
-    <button class="quick-yr" onclick="setYear(2001)">2001</button>
-    <button class="quick-yr" onclick="setYear(2008)">2008</button>
-    <button class="quick-yr" onclick="setYear(2020)">2020</button>
+  <div class="year-grid" id="year-grid"></div>
+  <div class="legend">
+    <div class="legend-item"><span class="legend-dot" style="background:#EF4444"></span>Communist States (Russia/China)</div>
+    <div class="legend-item"><span class="legend-dot" style="background:#3B82F6"></span>Protest &amp; Reform (Britain)</div>
+    <div class="legend-item"><span class="legend-dot" style="background:#A855F7"></span>American Civil Rights</div>
   </div>
 </div>
 
 <div class="content" id="content-area">
-  <div class="loading" style="grid-column:1/-1">
-    <span class="loading-spinner">⏳</span>
-    Loading historical data...
-  </div>
+  <div class="no-data">Select a year above to explore the historical context, key events, and syllabus connections.</div>
 </div>
 
 <script>
-let currentYear = 1944;
-let debounceTimer = null;
+const H = {"1780": {"topic": "britain", "era": "Late 18th Century · Age of Revolution", "snap": "Britain is at the height of the <strong>Industrial Revolution</strong>, with rapid urbanisation creating a new working class. The American Revolution (1776) and the looming French Revolution inspire radical thinkers. Parliament is dominated by the landed gentry, with only around 3% of the population able to vote.", "leaders": [{"country": "Britain", "name": "Lord North", "title": "Prime Minister", "c": "#3B82F6"}, {"country": "France", "name": "Louis XVI", "title": "King of France", "c": "#6366F1"}, {"country": "USA", "name": "George Washington", "title": "General / Founding Father", "c": "#10B981"}, {"country": "Prussia", "name": "Frederick the Great", "title": "King of Prussia", "c": "#F59E0B"}], "events": [{"title": "Gordon Riots", "desc": "Anti-Catholic protests in London turn violent, killing over 300. The largest civil disturbance in British history shows the fragility of public order.", "tag": "Protest", "c": "#EF4444"}, {"title": "Thomas Paine's Rights of Man", "desc": "Paine argues for republican government and universal male suffrage, selling 200,000 copies and terrifying the British establishment.", "tag": "Ideas", "c": "#10B981"}, {"title": "Corresponding Societies formed", "desc": "Working-class political clubs spring up across Britain, demanding parliamentary reform and inspired by events in France.", "tag": "Agitation", "c": "#F59E0B"}, {"title": "Industrial Revolution accelerates", "desc": "Steam power, textile mills, and iron production transform Britain's economy. The new industrial working class has no political representation whatsoever.", "tag": "Economics", "c": "#8B5CF6"}], "syl": "Component 2: Sets the context for Protest, Agitation and Reform. The lack of representation and the impact of the French Revolution shape the reform movements of the next century."}, "1819": {"topic": "britain", "era": "Early 19th Century · Post-Napoleonic unrest", "snap": "Post-war economic depression grips Britain. <strong>Unemployment soars</strong> as soldiers return from the Napoleonic Wars. The Corn Laws (1815) keep bread prices high, enriching landowners while the poor starve. Radical reform movements are growing — and the government is terrified of revolution spreading from France.", "leaders": [{"country": "Britain", "name": "Lord Liverpool", "title": "Prime Minister", "c": "#3B82F6"}, {"country": "France", "name": "Louis XVIII", "title": "King of France", "c": "#6366F1"}, {"country": "Austria", "name": "Metternich", "title": "Foreign Minister", "c": "#F59E0B"}, {"country": "Russia", "name": "Alexander I", "title": "Tsar of Russia", "c": "#EF4444"}], "events": [{"title": "Peterloo Massacre", "desc": "Cavalry charge a crowd of 60,000 peaceful reformers at St Peter's Field, Manchester, killing 15 and injuring 650. The name mockingly echoes the Battle of Waterloo.", "tag": "Massacre", "c": "#EF4444"}, {"title": "Six Acts passed", "desc": "The government restricts public meetings, raises stamp duty on newspapers, and allows magistrates to search for arms — a crackdown on dissent following Peterloo.", "tag": "Repression", "c": "#6B7280"}, {"title": "Henry Hunt leads reform movement", "desc": "Radical orators like Hunt begin mass campaigning for parliamentary reform. The concept of peaceful mass protest as a political tool begins to take shape.", "tag": "Reform", "c": "#10B981"}, {"title": "Habeas Corpus suspended", "desc": "Fearing revolution, the government suspends the right to a fair trial. Radical leaders can be imprisoned without charge. The government chooses repression over reform.", "tag": "Politics", "c": "#3B82F6"}], "syl": "Component 2: Peterloo is a key case study in government repression. The Six Acts show how the establishment resisted change. Why did the government choose force over reform?"}, "1832": {"topic": "britain", "era": "Early 19th Century · The Great Reform Act", "snap": "After years of agitation, <strong>the Great Reform Act</strong> finally passes — but it falls far short of radical demands. Rotten boroughs are abolished, the electorate expands from 400,000 to 650,000, and the new industrial cities gain representation. Yet only 1 in 7 men can vote, and women remain entirely excluded.", "leaders": [{"country": "Britain", "name": "Earl Grey", "title": "Prime Minister", "c": "#3B82F6"}, {"country": "France", "name": "Louis-Philippe", "title": "King of France", "c": "#6366F1"}, {"country": "Russia", "name": "Nicholas I", "title": "Tsar of Russia", "c": "#EF4444"}, {"country": "USA", "name": "Andrew Jackson", "title": "President", "c": "#10B981"}], "events": [{"title": "Great Reform Act passed", "desc": "After three failed attempts and near-revolution in Bristol and Nottingham, the Whig government passes the first major expansion of British democracy.", "tag": "Reform", "c": "#10B981"}, {"title": "Rotten boroughs abolished", "desc": "Constituencies like Old Sarum (3 voters, 2 MPs) are swept away. Manchester, Leeds, and Birmingham gain representation in Parliament for the first time.", "tag": "Reform", "c": "#10B981"}, {"title": "Abolition of Slavery Act (1833)", "desc": "The following year, slavery is abolished across the British Empire. Slave owners receive £20m compensation; enslaved people receive nothing.", "tag": "Reform", "c": "#10B981"}, {"title": "Chartism begins to stir", "desc": "Reformers disappointed by the Act's limits begin organising what will become the Chartist movement, demanding full male suffrage, secret ballot, and paid MPs.", "tag": "Agitation", "c": "#F59E0B"}], "syl": "Component 2: The 1832 Reform Act is the central event of the breadth paper — its significance, limitations, and role in encouraging further reform movements are all key analytical themes."}, "1848": {"topic": "britain", "era": "Mid-19th Century · Year of Revolutions", "snap": "Revolutions sweep Europe — France, Austria, Germany, Italy, Hungary. In Britain, <strong>Chartism reaches its peak</strong> with a petition claiming 5.7 million signatures. The government fears revolution but Britain's relative stability and economic growth help it avoid the continental upheaval. Chartism collapses.", "leaders": [{"country": "Britain", "name": "Lord John Russell", "title": "Prime Minister", "c": "#3B82F6"}, {"country": "France", "name": "Louis-Napoleon", "title": "President", "c": "#6366F1"}, {"country": "Austria", "name": "Franz Joseph", "title": "Emperor", "c": "#F59E0B"}, {"country": "Russia", "name": "Nicholas I", "title": "Tsar of Russia", "c": "#EF4444"}], "events": [{"title": "Chartist petition fails", "desc": "The third Chartist petition, supposedly with 5.7m signatures, is presented to Parliament. Many signatures are found to be forged or ridiculous. Chartism collapses as a mass movement.", "tag": "Agitation", "c": "#F59E0B"}, {"title": "Revolutions across Europe", "desc": "Liberal revolutions erupt in France, Austria, Prussia, and Italy. Britain watches nervously but stays stable — partly due to prosperity, partly to gradual reform.", "tag": "Politics", "c": "#3B82F6"}, {"title": "Communist Manifesto published", "desc": "Marx and Engels publish their pamphlet in German. It makes little immediate impact but will shape the next century's history profoundly.", "tag": "Ideas", "c": "#8B5CF6"}, {"title": "Why did Britain avoid revolution?", "desc": "Historians debate: economic growth, gradual reform through the 1832 Act, and the absence of a united revolutionary movement all contributed to British stability in 1848.", "tag": "Analysis", "c": "#10B981"}], "syl": "Component 2: Chartism and its failure in 1848 is a key case study. Why did Britain avoid revolution when the rest of Europe erupted? Was it the 1832 Act, prosperity, or repression?"}, "1867": {"topic": "britain", "era": "Mid-19th Century · Second Reform Act", "snap": "Disraeli's <strong>Second Reform Act</strong> dramatically extends the vote, nearly doubling the electorate to 2 million and giving working-class men in towns the vote for the first time. Disraeli calls it 'a leap in the dark.' Women remain excluded, fuelling growing frustration at their continued disenfranchisement.", "leaders": [{"country": "Britain", "name": "Benjamin Disraeli", "title": "Prime Minister", "c": "#3B82F6"}, {"country": "Prussia", "name": "Otto von Bismarck", "title": "Minister President", "c": "#F59E0B"}, {"country": "USA", "name": "Andrew Johnson", "title": "President", "c": "#10B981"}, {"country": "Russia", "name": "Alexander II", "title": "Tsar of Russia", "c": "#EF4444"}], "events": [{"title": "Second Reform Act", "desc": "Working-class men in urban boroughs gain the vote. The electorate nearly doubles. Disraeli passes what Gladstone had tried and failed to pass — a masterstroke of political pragmatism.", "tag": "Reform", "c": "#10B981"}, {"title": "Hyde Park Reform Riots", "desc": "A crowd tears down the railings of Hyde Park to hold a banned reform meeting. The government backs down, showing popular pressure can force political change.", "tag": "Protest", "c": "#EF4444"}, {"title": "John Stuart Mill's amendment fails", "desc": "Mill proposes replacing 'man' with 'person' in the Reform Act — the first parliamentary debate on women's suffrage. It loses 196 to 73, but the movement has formally begun.", "tag": "Women's Rights", "c": "#EC4899"}, {"title": "Rural workers still excluded", "desc": "Agricultural labourers remain without the vote — they must wait until 1884. The reform is significant but far from complete democracy.", "tag": "Limits", "c": "#6B7280"}], "syl": "Component 2: The 1867 Act is a landmark in franchise extension. Key debate: was Disraeli driven by principle, pragmatism, or party advantage? What was the role of popular pressure?"}, "1884": {"topic": "britain", "era": "Late 19th Century · Third Reform Act", "snap": "Gladstone's <strong>Third Reform Act</strong> extends the vote to rural labourers, tripling the electorate to 5.7 million. Around 60% of adult males can now vote. Yet women remain entirely excluded, fuelling growing anger. The Act also establishes single-member constituencies, reshaping British politics permanently.", "leaders": [{"country": "Britain", "name": "William Gladstone", "title": "Prime Minister", "c": "#3B82F6"}, {"country": "Germany", "name": "Otto von Bismarck", "title": "Chancellor", "c": "#F59E0B"}, {"country": "France", "name": "Jules Ferry", "title": "Prime Minister", "c": "#6366F1"}, {"country": "Russia", "name": "Alexander III", "title": "Tsar of Russia", "c": "#EF4444"}], "events": [{"title": "Third Reform Act", "desc": "Rural labourers finally gain the vote after decades of exclusion. The electorate trebles. Britain moves significantly closer to mass democracy — but women are still entirely shut out.", "tag": "Reform", "c": "#10B981"}, {"title": "Redistribution of Seats Act", "desc": "Most constituencies become single-member, ending the tradition of two MPs per seat and reshaping party politics fundamentally.", "tag": "Politics", "c": "#3B82F6"}, {"title": "Women's suffrage movement grows", "desc": "The National Society for Women's Suffrage campaigns constitutionally. The continued exclusion of women despite mass male reform is increasingly hard to justify logically.", "tag": "Women's Rights", "c": "#EC4899"}, {"title": "New Unionism emerging", "desc": "Unskilled workers begin organising into trade unions for the first time, setting the stage for the labour movement and eventual formation of the Labour Party.", "tag": "Labour", "c": "#F59E0B"}], "syl": "Component 2: The 1884 Act completes franchise extension for men. Its failure to include women sets up the suffrage campaigns of the next decades. Why was 1884 a step but not the destination?"}, "1903": {"topic": "britain", "era": "Early 20th Century · Militant suffrage begins", "snap": "<strong>Emmeline Pankhurst</strong> founds the Women's Social and Political Union (WSPU) in Manchester. Frustrated by 40 years of peaceful campaigning with no result, the 'suffragettes' adopt militant tactics — disrupting meetings, chaining themselves to railings, and eventually window-smashing and arson. The split between constitutional and militant suffrage becomes defining.", "leaders": [{"country": "Britain", "name": "Arthur Balfour", "title": "Prime Minister", "c": "#3B82F6"}, {"country": "Russia", "name": "Nicholas II", "title": "Tsar of Russia", "c": "#EF4444"}, {"country": "Germany", "name": "Kaiser Wilhelm II", "title": "Kaiser", "c": "#F59E0B"}, {"country": "USA", "name": "Theodore Roosevelt", "title": "President", "c": "#10B981"}], "events": [{"title": "WSPU founded", "desc": "Emmeline Pankhurst and daughters Christabel and Sylvia found the Women's Social and Political Union in Manchester. Their motto: 'Deeds, not words.'", "tag": "Women's Rights", "c": "#EC4899"}, {"title": "Militant tactics justified", "desc": "Pankhurst argues that 40 years of peaceful campaigning has achieved nothing. Militant action, even if it alienates moderate supporters, will force the issue onto the political agenda.", "tag": "Tactics", "c": "#8B5CF6"}, {"title": "NUWSS continues peacefully", "desc": "Millicent Fawcett's National Union of Women's Suffrage Societies maintains constitutional campaigning. The two wings will often clash sharply on tactics and strategy.", "tag": "Reform", "c": "#10B981"}, {"title": "Labour Party formed", "desc": "The Labour Representation Committee becomes the Labour Party with 29 MPs. Whether Labour would support women's suffrage — and on what terms — becomes politically critical.", "tag": "Politics", "c": "#3B82F6"}], "syl": "Component 2: The founding of the WSPU and the constitutional/militant split is central to the paper. Evaluate the effectiveness of each approach — did militancy help or harm the cause?"}, "1905": {"topic": "russia", "era": "Early 20th Century · Russia on the brink", "snap": "Russia is a vast, backward autocracy ruled by <strong>Tsar Nicholas II</strong>, who believes he rules by divine right. Defeat in the Russo-Japanese War exposes the regime's weakness. On Bloody Sunday, troops fire on peaceful petitioners, killing hundreds and shattering faith in the Tsar. The 1905 Revolution forces Nicholas to grant the October Manifesto and a parliament — the Duma.", "leaders": [{"country": "Russia", "name": "Tsar Nicholas II", "title": "Tsar of All Russia", "c": "#EF4444"}, {"country": "Britain", "name": "Arthur Balfour", "title": "Prime Minister", "c": "#3B82F6"}, {"country": "Germany", "name": "Kaiser Wilhelm II", "title": "Kaiser", "c": "#F59E0B"}, {"country": "Japan", "name": "Emperor Meiji", "title": "Emperor", "c": "#10B981"}], "events": [{"title": "Bloody Sunday", "desc": "9 January: Father Gapon leads 150,000 workers to petition the Tsar at the Winter Palace. Troops open fire, killing around 200. The 'Little Father' myth — that the Tsar loves his people — is shattered.", "tag": "Revolution", "c": "#EF4444"}, {"title": "Russo-Japanese War ends in defeat", "desc": "Russia's humiliating defeat by Japan — an Asian power — undermines confidence in the regime and reveals the military's catastrophic weakness and corruption.", "tag": "War", "c": "#F59E0B"}, {"title": "October Manifesto", "desc": "Facing revolution, Nicholas II issues the October Manifesto — promising civil liberties, a Duma (parliament), and an end to censorship. A tactical concession designed to divide the opposition.", "tag": "Politics", "c": "#3B82F6"}, {"title": "Soviets (workers' councils) emerge", "desc": "Workers' soviets appear spontaneously in St Petersburg. Trotsky leads the St Petersburg Soviet — a model of grassroots organisation that will be used again in 1917.", "tag": "Revolution", "c": "#8B5CF6"}], "syl": "Component 1: Pre-revolutionary Russia. The 1905 Revolution shows the regime's vulnerabilities. Key question: why did the Tsar survive 1905 but not 1917? What had changed?"}, "1914": {"topic": "russia", "era": "Early 20th Century · Russia enters the Great War", "snap": "Russia enters the <strong>First World War</strong> against Germany and Austria-Hungary. Initial patriotic enthusiasm fades rapidly as Russia suffers catastrophic defeats. The Tsar's decision to take personal command of the army in 1915 proves fatal: every defeat will now be blamed on him personally.", "leaders": [{"country": "Russia", "name": "Tsar Nicholas II", "title": "Tsar of All Russia", "c": "#EF4444"}, {"country": "Britain", "name": "Herbert Asquith", "title": "Prime Minister", "c": "#3B82F6"}, {"country": "Germany", "name": "Kaiser Wilhelm II", "title": "Kaiser", "c": "#F59E0B"}, {"country": "Austria-Hungary", "name": "Franz Joseph", "title": "Emperor", "c": "#6366F1"}], "events": [{"title": "Russia mobilises for war", "desc": "The assassination of Archduke Franz Ferdinand triggers the alliance system, pulling Russia into war against Germany and Austria-Hungary. Nationalist enthusiasm sweeps the cities.", "tag": "War", "c": "#EF4444"}, {"title": "Battle of Tannenberg", "desc": "Germany encircles and destroys an entire Russian army — 92,000 killed or captured. Russia's military inadequacy is exposed in the war's opening weeks.", "tag": "War", "c": "#EF4444"}, {"title": "Rasputin's influence grows", "desc": "With the Tsar away at the front, Empress Alexandra relies on the mystic Rasputin to manage affairs. His scandalous influence becomes a propaganda gift for the regime's opponents.", "tag": "Court Politics", "c": "#8B5CF6"}, {"title": "Suffragettes suspend militancy", "desc": "In Britain, Pankhurst urges women to support the war effort. Many suffragettes hand white feathers to men not in uniform. Their patriotic contribution will later be used to justify the 1918 Act.", "tag": "Britain", "c": "#EC4899"}], "syl": "Component 1: The First World War as a catalyst for revolution in Russia. How did the war undermine the Tsarist regime? Why was wartime failure so politically dangerous for the Tsar personally?"}, "1917": {"topic": "russia", "era": "Early 20th Century · The Russian Revolutions", "snap": "Two revolutions transform Russia. The <strong>February Revolution</strong> topples the Tsar after mass strikes and bread riots in Petrograd. A Provisional Government takes power. Then in October, Lenin's Bolsheviks seize power in a near-bloodless coup, promising 'Peace, Land, Bread.' The world will never be the same.", "leaders": [{"country": "Russia (Bolsheviks)", "name": "Vladimir Lenin", "title": "Bolshevik Party Leader", "c": "#EF4444"}, {"country": "Russia (Provisional)", "name": "Alexander Kerensky", "title": "Prime Minister", "c": "#F59E0B"}, {"country": "Britain", "name": "David Lloyd George", "title": "Prime Minister", "c": "#3B82F6"}, {"country": "USA", "name": "Woodrow Wilson", "title": "President", "c": "#10B981"}], "events": [{"title": "February Revolution", "desc": "Mass strikes and bread riots in Petrograd. Troops refuse to fire on protesters. Nicholas II abdicates. After 300 years, Romanov rule collapses in days. A Provisional Government is formed.", "tag": "Revolution", "c": "#EF4444"}, {"title": "Lenin's April Theses", "desc": "Lenin returns from exile in Switzerland (in a sealed German train) and demands immediate socialist revolution, rejecting any cooperation with the Provisional Government.", "tag": "Ideas", "c": "#EF4444"}, {"title": "October Revolution", "desc": "Bolsheviks seize key buildings in Petrograd overnight. The Provisional Government collapses with barely a fight. Lenin announces Soviet power to a startled world.", "tag": "Revolution", "c": "#EF4444"}, {"title": "Provisional Government's fatal error", "desc": "Kerensky refuses to leave the war. The decision to continue fighting Germany — when soldiers and workers want peace — destroys the Provisional Government's popular support.", "tag": "Analysis", "c": "#8B5CF6"}], "syl": "Component 1: The two 1917 revolutions are the centrepiece of the Russia paper. Why did the Bolsheviks succeed where others failed? What were Lenin's key decisions? Was October a coup or a revolution?"}, "1918": {"topic": "britain", "era": "Early 20th Century · Votes for (some) Women", "snap": "After years of militant campaigning and wartime service, <strong>women over 30 gain the vote</strong> under the Representation of the People Act. Around 8.4 million women can now vote — but 12 million are still excluded. The Act also extends the vote to all men over 21. Full equal suffrage will not come until 1928.", "leaders": [{"country": "Britain", "name": "David Lloyd George", "title": "Prime Minister", "c": "#3B82F6"}, {"country": "Russia", "name": "Vladimir Lenin", "title": "Bolshevik Leader", "c": "#EF4444"}, {"country": "Germany", "name": "Kaiser Wilhelm II", "title": "Kaiser (abdicates Nov)", "c": "#F59E0B"}, {"country": "USA", "name": "Woodrow Wilson", "title": "President", "c": "#10B981"}], "events": [{"title": "Representation of the People Act", "desc": "Women over 30 who meet property qualifications gain the vote. All men over 21 can vote. The electorate trebles from 7.7 million to 21.4 million overnight.", "tag": "Reform", "c": "#10B981"}, {"title": "Why 30 and not 21?", "desc": "MPs feared women would outnumber men (due to wartime losses) if the voting age was equal. The property qualification was designed to limit the number of working-class women voting.", "tag": "Analysis", "c": "#8B5CF6"}, {"title": "First woman MP elected", "desc": "Constance Markievicz wins a Dublin constituency for Sinn Féin but refuses her seat. Nancy Astor becomes the first woman to take her seat in Parliament in 1919.", "tag": "Milestone", "c": "#EC4899"}, {"title": "First World War ends", "desc": "The armistice is signed on 11 November. The war that killed 17 million has transformed politics: four empires have fallen and democratic expectations have risen everywhere.", "tag": "War", "c": "#F59E0B"}], "syl": "Component 2: The 1918 Act is the culmination of the Protest, Agitation and Reform paper. Key debate: how much was the reform caused by the war, and how much by the suffragette campaigns?"}, "1921": {"topic": "russia", "era": "Early 1920s · NEP and consolidation", "snap": "The <strong>New Economic Policy (NEP)</strong> marks a strategic retreat from full communism. After War Communism and famine kill millions, Lenin allows limited private trade. The peasants can sell surplus grain. The economy begins to recover. But ideological purists are horrified: is this the beginning of capitalism's return to Russia?", "leaders": [{"country": "Russia", "name": "Vladimir Lenin", "title": "Bolshevik Leader", "c": "#EF4444"}, {"country": "Russia", "name": "Joseph Stalin", "title": "General Secretary (from 1922)", "c": "#8B5CF6"}, {"country": "Britain", "name": "David Lloyd George", "title": "Prime Minister", "c": "#3B82F6"}, {"country": "Germany", "name": "Friedrich Ebert", "title": "President", "c": "#F59E0B"}], "events": [{"title": "New Economic Policy introduced", "desc": "Lenin introduces the NEP after the Kronstadt mutiny and widespread peasant rebellion. Private trade is legalised. 'NEPmen' — small traders — emerge as a new class.", "tag": "Economics", "c": "#10B981"}, {"title": "Kronstadt Mutiny", "desc": "Sailors at the Kronstadt naval base — heroes of the 1917 revolution — rebel against Bolshevik economic policy. Trotsky crushes them ruthlessly, shocking many in the party.", "tag": "Repression", "c": "#EF4444"}, {"title": "Famine of 1921-22", "desc": "Five million die in the worst famine in Russian history, caused by the chaos of Civil War and the catastrophic effects of grain requisitioning under War Communism.", "tag": "Crisis", "c": "#F59E0B"}, {"title": "Stalin becomes General Secretary", "desc": "Stalin takes the apparently administrative role of General Secretary in 1922. Lenin later warns this gives him too much power — but the warning is suppressed and ignored.", "tag": "Politics", "c": "#8B5CF6"}], "syl": "Component 1: The NEP shows Lenin's pragmatism and the tensions between ideology and economic reality. It also sets up the post-Lenin succession struggle and the debate over the NEP's future."}, "1924": {"topic": "russia", "era": "Mid-1920s · Death of Lenin", "snap": "<strong>Lenin dies</strong>, leaving no clear successor. The party becomes a battleground. <strong>Trotsky</strong> is seen as Lenin's natural heir but makes enemies through arrogance. <strong>Stalin</strong>, underestimated by rivals, uses his control of party machinery to outmanoeuvre all opponents — one by one.", "leaders": [{"country": "Russia", "name": "Joseph Stalin", "title": "General Secretary", "c": "#EF4444"}, {"country": "Russia", "name": "Leon Trotsky", "title": "Commissar for War", "c": "#F59E0B"}, {"country": "Britain", "name": "Ramsay MacDonald", "title": "Prime Minister (first Labour)", "c": "#3B82F6"}, {"country": "Italy", "name": "Benito Mussolini", "title": "Prime Minister", "c": "#6366F1"}], "events": [{"title": "Lenin dies", "desc": "21 January 1924. Lenin dies after a series of strokes. His death triggers a power struggle that will end with Stalin's dictatorship. Lenin's Testament warning against Stalin is suppressed.", "tag": "Death", "c": "#6B7280"}, {"title": "Lenin's Testament suppressed", "desc": "Lenin had written a political testament warning that Stalin was too rude and should be removed as General Secretary. The party leadership votes to suppress it.", "tag": "Politics", "c": "#8B5CF6"}, {"title": "Stalin outmanoeuvres Trotsky", "desc": "Stalin allies with Zinoviev and Kamenev against Trotsky. Trotsky is branded a 'Menshevik', excluded from key meetings, and eventually from the party itself.", "tag": "Power Struggle", "c": "#EF4444"}, {"title": "First Labour government in Britain", "desc": "Ramsay MacDonald forms Britain's first Labour government in January 1924. It lasts only 9 months but marks the arrival of working-class politics at Westminster.", "tag": "Britain", "c": "#3B82F6"}], "syl": "Component 1: The succession struggle after Lenin is essential. How did Stalin win? Why did Trotsky lose? What does this reveal about how the Soviet political system actually worked?"}, "1928": {"topic": "russia", "era": "Late 1920s · Stalin consolidates power", "snap": "Stalin has outmanoeuvred all rivals and now attacks the NEP itself. The <strong>First Five Year Plan</strong> launches rapid industrialisation at brutal human cost. Simultaneously, in Britain, women finally achieve <strong>equal suffrage</strong> — the culmination of 60 years of campaigning.", "leaders": [{"country": "Russia", "name": "Joseph Stalin", "title": "General Secretary", "c": "#EF4444"}, {"country": "Britain", "name": "Stanley Baldwin", "title": "Prime Minister", "c": "#3B82F6"}, {"country": "Germany", "name": "Paul von Hindenburg", "title": "President", "c": "#F59E0B"}, {"country": "China", "name": "Chiang Kai-shek", "title": "Nationalist Leader", "c": "#10B981"}], "events": [{"title": "First Five Year Plan announced", "desc": "Stalin abandons the NEP and launches a crash industrialisation programme. Steel, coal, and electricity production targets are set at impossibly ambitious levels.", "tag": "Economics", "c": "#10B981"}, {"title": "Trotsky exiled", "desc": "Stalin has Trotsky expelled from the Soviet Union. Trotsky will be murdered in Mexico in 1940 on Stalin's orders. The last serious rival is removed.", "tag": "Power", "c": "#EF4444"}, {"title": "Equal Franchise Act — UK", "desc": "All women over 21 gain the vote on equal terms with men. The long campaign for women's suffrage — begun formally in 1867 — is finally and completely achieved.", "tag": "Britain", "c": "#EC4899"}, {"title": "Collectivisation begins", "desc": "Stalin orders the collectivisation of agriculture, combining private farms into collective 'kolkhozy'. Peasants who resist — labelled 'kulaks' — face deportation or death.", "tag": "Economics", "c": "#F59E0B"}], "syl": "Components 1 and 2: 1928 marks both the completion of women's suffrage in Britain (end of Component 2) and the beginning of Stalin's 'revolution from above' in Russia (central to Component 1)."}, "1932": {"topic": "russia", "era": "Early 1930s · Terror Famine", "snap": "Stalin's forced collectivisation causes <strong>catastrophic famine</strong>. In Ukraine, the Holodomor kills an estimated 3.5–7 million people — many historians classify it as genocide. Meanwhile, the Five Year Plans are transforming the Soviet economy, but at immense and deliberate human cost.", "leaders": [{"country": "Russia", "name": "Joseph Stalin", "title": "General Secretary", "c": "#EF4444"}, {"country": "Germany", "name": "Paul von Hindenburg", "title": "President", "c": "#F59E0B"}, {"country": "Britain", "name": "Ramsay MacDonald", "title": "Prime Minister (National Gov)", "c": "#3B82F6"}, {"country": "USA", "name": "Herbert Hoover", "title": "President", "c": "#10B981"}], "events": [{"title": "Holodomor — Ukrainian famine", "desc": "Collectivisation and grain quotas cause mass starvation across the USSR, worst in Ukraine. The Soviet government denies the famine exists and continues to export grain abroad.", "tag": "Atrocity", "c": "#EF4444"}, {"title": "Collectivisation outcomes", "desc": "By 1932, 60% of peasant households are collectivised, rising to 93% by 1937. Agricultural productivity collapses. The Soviet Union will struggle to feed itself for decades.", "tag": "Economics", "c": "#F59E0B"}, {"title": "Industrial growth", "desc": "Industrial production grows rapidly — steel, coal, and electricity output all expand dramatically. The USSR is becoming an industrial power, but the human cost is staggering.", "tag": "Economics", "c": "#10B981"}, {"title": "Hitler on the brink in Germany", "desc": "The Great Depression destroys the Weimar Republic. Hitler's Nazi Party wins 37% of the vote in July 1932. Stalin dismisses the Nazi threat, a catastrophic miscalculation.", "tag": "World", "c": "#6B7280"}], "syl": "Component 1: The human cost of collectivisation and industrialisation is a key analytical issue. How should historians weigh economic progress against deliberate mass suffering?"}, "1936": {"topic": "russia", "era": "Mid-1930s · The Great Terror", "snap": "Stalin's <strong>Great Terror</strong> convulses the Soviet Union. Show trials of Old Bolsheviks broadcast clearly tortured confessions. The Red Army's leadership is almost entirely executed. An estimated 750,000 people are shot; millions more sent to the Gulag. No one — however senior or loyal — is safe.", "leaders": [{"country": "Russia", "name": "Joseph Stalin", "title": "General Secretary", "c": "#EF4444"}, {"country": "Germany", "name": "Adolf Hitler", "title": "Führer", "c": "#F59E0B"}, {"country": "Britain", "name": "Stanley Baldwin", "title": "Prime Minister", "c": "#3B82F6"}, {"country": "Spain", "name": "Francisco Franco", "title": "Nationalist Leader", "c": "#6366F1"}], "events": [{"title": "Show Trials begin", "desc": "Zinoviev, Kamenev and other Old Bolsheviks confess to absurd crimes in public trials and are shot. The confessions are extracted through torture and threats to family members.", "tag": "Terror", "c": "#EF4444"}, {"title": "Purge of the Red Army", "desc": "Three of five marshals, 13 of 15 army commanders, and half of all colonels are executed or imprisoned. The army is decapitated just as Hitler rearmed Germany — a catastrophic own-goal.", "tag": "Terror", "c": "#EF4444"}, {"title": "NKVD arrest quotas", "desc": "The secret police is given numerical arrest quotas for each region. Citizens denounce neighbours and colleagues to protect themselves. Total fear grips Soviet society.", "tag": "Terror", "c": "#6B7280"}, {"title": "Stalin Constitution adopted", "desc": "Ironically, a new 'democratic' constitution is introduced promising free elections and civil rights. In practice these rights do not exist. It is propaganda designed for foreign audiences.", "tag": "Politics", "c": "#8B5CF6"}], "syl": "Component 1: The Great Terror is central to understanding Stalinist dictatorship. Why did Stalin order the purges? What do they reveal about how the Soviet system actually functioned?"}, "1949": {"topic": "russia", "era": "Late 1940s · Mao's Communist China", "snap": "After 22 years of civil war, invasion and revolution, <strong>Mao Zedong proclaims the People's Republic of China</strong> on 1 October 1949. The Nationalists flee to Taiwan. China — a quarter of humanity — has 'stood up.' The world's most populous nation is now communist. Stalin congratulates Mao but fears a rival centre of communist power.", "leaders": [{"country": "China", "name": "Mao Zedong", "title": "Chairman, People's Republic", "c": "#EF4444"}, {"country": "Russia", "name": "Joseph Stalin", "title": "General Secretary", "c": "#8B5CF6"}, {"country": "USA", "name": "Harry S. Truman", "title": "President", "c": "#10B981"}, {"country": "Britain", "name": "Clement Attlee", "title": "Prime Minister", "c": "#3B82F6"}], "events": [{"title": "People's Republic of China proclaimed", "desc": "1 October 1949: Mao stands on the Gate of Heavenly Peace in Beijing and proclaims the People's Republic. 'The Chinese people have stood up,' he declares to a vast crowd.", "tag": "Revolution", "c": "#EF4444"}, {"title": "Nationalists flee to Taiwan", "desc": "Chiang Kai-shek and the Nationalist government retreat to Taiwan, taking China's gold reserves and cultural treasures. The 'Two Chinas' problem will define Asian geopolitics for decades.", "tag": "Politics", "c": "#F59E0B"}, {"title": "Sino-Soviet Treaty", "desc": "February 1950: Mao visits Moscow. Stalin keeps him waiting for weeks, then offers a 30-year alliance and limited economic aid. Relations are never easy or equal.", "tag": "Diplomacy", "c": "#8B5CF6"}, {"title": "Why did the Communists win?", "desc": "Key factors: land reform promises to peasants, Japanese invasion which discredited the Nationalists, Mao's guerrilla strategy, and the Long March creating a dedicated revolutionary core.", "tag": "Analysis", "c": "#10B981"}], "syl": "Component 1 (China): The Communist victory of 1949 — why did Mao win the Civil War? What was the role of the Long March, Japanese invasion, land reform, and Communist organisation?"}, "1955": {"topic": "civil-rights", "era": "Mid-1950s · Montgomery and the Civil Rights Movement", "snap": "The <strong>Montgomery Bus Boycott</strong> launches the modern Civil Rights Movement. Rosa Parks's arrest for refusing to give up her seat on a segregated bus triggers a 381-day boycott that desegregates the city's buses. A 26-year-old Baptist minister named <strong>Martin Luther King Jr</strong> emerges as the movement's leader.", "leaders": [{"country": "USA", "name": "Dwight Eisenhower", "title": "President", "c": "#10B981"}, {"country": "Civil Rights", "name": "Martin Luther King Jr", "title": "MIA President", "c": "#A855F7"}, {"country": "Russia", "name": "Nikita Khrushchev", "title": "First Secretary", "c": "#EF4444"}, {"country": "Britain", "name": "Anthony Eden", "title": "Prime Minister", "c": "#3B82F6"}], "events": [{"title": "Rosa Parks arrested", "desc": "1 December 1955: Rosa Parks refuses to give up her seat to a white passenger on a Montgomery bus. She is arrested. The NAACP sees the carefully chosen test case they have been waiting for.", "tag": "Protest", "c": "#A855F7"}, {"title": "Montgomery Bus Boycott", "desc": "381 days: 40,000 Black residents of Montgomery refuse to use the buses, walking miles to work in all weathers. The boycott costs the bus company 65% of its revenue.", "tag": "Boycott", "c": "#A855F7"}, {"title": "MLK emerges as leader", "desc": "The 26-year-old Reverend King is elected president of the Montgomery Improvement Association. His oratory, non-violent strategy, and Christian message captivate the nation.", "tag": "Leadership", "c": "#8B5CF6"}, {"title": "Brown v Board of Education (1954)", "desc": "The Supreme Court ruling that school segregation is unconstitutional creates the legal framework for the Civil Rights Movement. White Southern resistance is fierce and immediate.", "tag": "Law", "c": "#10B981"}], "syl": "Component 3: Montgomery is a foundational case study. How did the boycott work? What made King's leadership effective? What were the limits of legal challenges alone? Role of the NAACP?"}, "1960": {"topic": "civil-rights", "era": "Early 1960s · Sit-ins and Freedom Rides", "snap": "The Civil Rights Movement accelerates with <strong>sit-ins, Freedom Rides, and mass protest</strong>. Four Black students sit at a whites-only Woolworth's lunch counter in Greensboro — within weeks, the tactic has spread to 50 cities. Freedom Riders challenge segregation on interstate buses, facing brutal violence. The Kennedy administration is reluctantly forced to respond.", "leaders": [{"country": "USA", "name": "John F. Kennedy", "title": "President (from Jan 1961)", "c": "#10B981"}, {"country": "Civil Rights", "name": "Martin Luther King Jr", "title": "SCLC President", "c": "#A855F7"}, {"country": "Civil Rights", "name": "John Lewis", "title": "SNCC Chairman", "c": "#8B5CF6"}, {"country": "Russia", "name": "Nikita Khrushchev", "title": "First Secretary", "c": "#EF4444"}], "events": [{"title": "Greensboro sit-ins", "desc": "1 February 1960: four Black students sit at a whites-only Woolworth's lunch counter and refuse to leave. Within weeks the tactic spreads across the South to 50 cities.", "tag": "Direct Action", "c": "#A855F7"}, {"title": "SNCC founded", "desc": "The Student Non-violent Co-ordinating Committee is founded, giving young activists their own organisation. Student energy and willingness to face violence will prove crucial.", "tag": "Organisation", "c": "#8B5CF6"}, {"title": "Freedom Rides", "desc": "1961: interracial groups ride interstate buses into the Deep South to challenge segregated facilities. They are met with firebombs and beatings in Alabama. Robert Kennedy is forced to act.", "tag": "Direct Action", "c": "#A855F7"}, {"title": "Kennedy elected President", "desc": "JFK wins the 1960 election partly due to Black voters. But Kennedy is cautious — civil rights legislation risks losing the South. His commitment to the cause is questioned by movement leaders.", "tag": "Politics", "c": "#10B981"}], "syl": "Component 3: The sit-ins and Freedom Rides demonstrate the effectiveness of non-violent direct action. How did federal government reluctance shape the movement's tactics and strategy?"}, "1963": {"topic": "civil-rights", "era": "Early 1960s · Birmingham and the March on Washington", "snap": "<strong>'I Have a Dream'</strong>: 250,000 march on Washington. But the year opens with Bull Connor's fire hoses and police dogs turned on protesters in Birmingham — images that shock the world and force Kennedy to introduce civil rights legislation. King's '<strong>Letter from Birmingham Jail</strong>' becomes a masterpiece of political argument.", "leaders": [{"country": "USA", "name": "John F. Kennedy", "title": "President (assassinated Nov)", "c": "#10B981"}, {"country": "Civil Rights", "name": "Martin Luther King Jr", "title": "SCLC President", "c": "#A855F7"}, {"country": "Civil Rights", "name": "Malcolm X", "title": "Nation of Islam spokesman", "c": "#8B5CF6"}, {"country": "Russia", "name": "Nikita Khrushchev", "title": "First Secretary", "c": "#EF4444"}], "events": [{"title": "Birmingham Campaign", "desc": "MLK targets Birmingham — the most segregated city in America. Bull Connor uses fire hoses and police dogs on protesters. The images broadcast worldwide force Kennedy to act at last.", "tag": "Direct Action", "c": "#A855F7"}, {"title": "'Letter from Birmingham Jail'", "desc": "King writes his most powerful text from a jail cell, responding to white clergymen who call the protests 'untimely.' It becomes a landmark of political philosophy and persuasion.", "tag": "Ideas", "c": "#8B5CF6"}, {"title": "March on Washington", "desc": "28 August: 250,000 march on Washington. King delivers his 'I Have a Dream' speech from the Lincoln Memorial. The largest demonstration in American history to that date.", "tag": "March", "c": "#A855F7"}, {"title": "Kennedy assassinated", "desc": "22 November: Kennedy is shot in Dallas. Lyndon Johnson, a Texan, becomes President. Civil Rights leaders fear the worst — but Johnson will prove a more effective champion of legislation.", "tag": "Crisis", "c": "#EF4444"}], "syl": "Component 3: 1963 is the pivotal year. Birmingham forces federal action. The March shows the movement's peak strength. How important was Kennedy to civil rights progress? Why did he act?"}, "1964": {"topic": "civil-rights", "era": "Mid-1960s · Civil Rights Act", "snap": "President Johnson signs the <strong>Civil Rights Act of 1964</strong> — banning segregation in public places and discrimination in employment. It is the greatest civil rights legislation since Reconstruction. But in Mississippi, three civil rights workers are murdered. And Malcolm X offers a very different vision for Black Americans.", "leaders": [{"country": "USA", "name": "Lyndon B. Johnson", "title": "President", "c": "#10B981"}, {"country": "Civil Rights", "name": "Martin Luther King Jr", "title": "SCLC President", "c": "#A855F7"}, {"country": "Civil Rights", "name": "Malcolm X", "title": "Nation of Islam", "c": "#8B5CF6"}, {"country": "Russia", "name": "Leonid Brezhnev", "title": "General Secretary (from Oct)", "c": "#EF4444"}], "events": [{"title": "Civil Rights Act signed", "desc": "2 July 1964: LBJ signs the Civil Rights Act, outlawing segregation in public places and discrimination in employment. Johnson reportedly says 'We have lost the South for a generation.'", "tag": "Legislation", "c": "#10B981"}, {"title": "Mississippi murders", "desc": "Three civil rights workers — two white, one Black — are murdered by the KKK in Mississippi. Police complicity is revealed. National outrage increases pressure for voting rights.", "tag": "Violence", "c": "#EF4444"}, {"title": "Malcolm X leaves Nation of Islam", "desc": "Malcolm X breaks with Elijah Muhammad. After visiting Mecca he moderates his views on white people, but is assassinated in February 1965 before he can develop a new direction.", "tag": "Black Power", "c": "#8B5CF6"}, {"title": "MLK wins Nobel Peace Prize", "desc": "King is awarded the Nobel Peace Prize, bringing international legitimacy to the Civil Rights Movement and putting global pressure on the US government to act.", "tag": "Recognition", "c": "#A855F7"}], "syl": "Component 3: The Civil Rights Act — its contents, significance, and limitations. Why was LBJ more effective than Kennedy? What was Malcolm X's role and significance to the movement?"}, "1965": {"topic": "civil-rights", "era": "Mid-1960s · Voting Rights Act and Selma", "snap": "<strong>Bloody Sunday</strong>: State troopers attack peaceful marchers on the Edmund Pettus Bridge in Selma, Alabama. The images force Johnson to introduce the <strong>Voting Rights Act</strong>, which eliminates barriers to Black voting. But in Watts, Los Angeles, urban riots reveal that formal legal rights mean little without economic justice.", "leaders": [{"country": "USA", "name": "Lyndon B. Johnson", "title": "President", "c": "#10B981"}, {"country": "Civil Rights", "name": "Martin Luther King Jr", "title": "SCLC President", "c": "#A855F7"}, {"country": "Alabama", "name": "George Wallace", "title": "Governor of Alabama", "c": "#EF4444"}, {"country": "Russia", "name": "Leonid Brezhnev", "title": "General Secretary", "c": "#8B5CF6"}], "events": [{"title": "'Bloody Sunday' at Selma", "desc": "7 March: 600 peaceful marchers are beaten by state troopers on the Edmund Pettus Bridge on live television. The footage shocks the nation. Johnson addresses Congress eight days later.", "tag": "Direct Action", "c": "#A855F7"}, {"title": "Voting Rights Act signed", "desc": "August 1965: the Voting Rights Act bans literacy tests and other barriers to Black voting. Within three years, one million new Black voters are registered in the South.", "tag": "Legislation", "c": "#10B981"}, {"title": "Watts riots", "desc": "Six days of riots in Los Angeles leave 34 dead and $40m of damage. The riots reveal that legal victories have not addressed urban poverty and discrimination in the North.", "tag": "Riots", "c": "#EF4444"}, {"title": "Malcolm X assassinated", "desc": "February 1965: Malcolm X is shot dead at a rally in New York. His assassination deepens tensions within the movement and removes a complex, evolving voice.", "tag": "Violence", "c": "#8B5CF6"}], "syl": "Component 3: Selma and the Voting Rights Act — the high point of the legislative Civil Rights Movement. How effective was non-violent direct action? What remained unachieved after 1965?"}, "1968": {"topic": "civil-rights", "era": "Late 1960s · Assassination of MLK", "snap": "<strong>Martin Luther King Jr is assassinated</strong> on 4 April 1968 in Memphis. Over 100 American cities erupt in riots. Nixon is elected president on a 'law and order' platform. The Civil Rights Movement's legislative phase effectively ends. The <strong>Fair Housing Act</strong> — passed within a week of King's death — is his final legislative legacy.", "leaders": [{"country": "USA", "name": "Richard Nixon", "title": "President (elected Nov)", "c": "#10B981"}, {"country": "Civil Rights", "name": "Martin Luther King Jr", "title": "Assassinated April 4", "c": "#A855F7"}, {"country": "Russia", "name": "Leonid Brezhnev", "title": "General Secretary", "c": "#EF4444"}, {"country": "France", "name": "Charles de Gaulle", "title": "President", "c": "#6366F1"}], "events": [{"title": "Martin Luther King Jr assassinated", "desc": "4 April 1968: King is shot on the balcony of the Lorraine Motel in Memphis, where he has come to support striking sanitation workers. Over 100 US cities erupt in riots.", "tag": "Assassination", "c": "#EF4444"}, {"title": "Fair Housing Act passed", "desc": "Passed seven days after King's assassination, the Act bans discrimination in housing sales and rentals. Congress acts partly from guilt. It is King's final legislative legacy.", "tag": "Legislation", "c": "#10B981"}, {"title": "Nixon elected on 'law and order'", "desc": "Nixon's election signals the white backlash against civil rights and urban disorder. His 'Southern Strategy' exploits racial resentment to build a Republican majority for a generation.", "tag": "Politics", "c": "#8B5CF6"}, {"title": "Legacy of the movement", "desc": "The Civil Rights Movement achieved the formal legal equality promised by the Constitution. It dismantled Jim Crow. But economic inequality, housing segregation, and police violence persisted.", "tag": "Analysis", "c": "#A855F7"}], "syl": "Component 3: 1968 as the end of the Civil Rights legislative era. How much had been achieved by 1968? What remained unfinished? Was the assassination of King the end, or a transformation?"}, "1966": {"topic": "russia", "era": "Mid-1960s · Cultural Revolution in China", "snap": "Mao Zedong launches the <strong>Cultural Revolution</strong> to reassert his dominance after the catastrophic <strong>Great Leap Forward</strong> (1958–62) killed an estimated 15–45 million people in famine. Red Guards attack intellectuals, teachers, and officials. The party apparatus is paralysed. An estimated 1.5 million people die and millions more are persecuted.", "leaders": [{"country": "China", "name": "Mao Zedong", "title": "Chairman, Communist Party", "c": "#EF4444"}, {"country": "China", "name": "Lin Biao", "title": "Defence Minister", "c": "#F59E0B"}, {"country": "Russia", "name": "Leonid Brezhnev", "title": "General Secretary", "c": "#8B5CF6"}, {"country": "USA", "name": "Lyndon B. Johnson", "title": "President", "c": "#10B981"}], "events": [{"title": "Cultural Revolution proclaimed", "desc": "May 1966: Mao mobilises millions of Red Guards to attack party officials, intellectuals, and anyone seen as insufficiently revolutionary — including many of Mao's own former allies.", "tag": "Revolution", "c": "#EF4444"}, {"title": "Destruction of the 'Four Olds'", "desc": "Old ideas, culture, customs, and habits are attacked. Books burned, temples destroyed, teachers beaten. Universities close for four years. The entire educated class is targeted.", "tag": "Repression", "c": "#6B7280"}, {"title": "Great Leap Forward's legacy", "desc": "The Great Leap Forward (1958–62) had forced peasants into communes and diverted agricultural labour to backyard steel production. Result: a famine killing 15–45 million people.", "tag": "Legacy", "c": "#F59E0B"}, {"title": "Sino-Soviet split", "desc": "Relations between China and USSR have broken down completely. Mao accuses Khrushchev of 'revisionism.' The two communist superpowers nearly go to war in 1969.", "tag": "Diplomacy", "c": "#8B5CF6"}], "syl": "Component 1 (China): The Cultural Revolution — Mao's motivations, methods, and impact. How does it compare with Stalin's Terror? What does it reveal about the nature of communist dictatorship?"}, "1976": {"topic": "russia", "era": "Mid-1970s · Death of Mao", "snap": "<strong>Mao Zedong dies</strong>, ending 27 years of absolute rule. The <strong>Gang of Four</strong> — led by Mao's wife Jiang Qing — attempts to seize power but is arrested within a month. Deng Xiaoping begins to emerge. China starts the long shift towards economic liberalisation. The Cultural Revolution is declared over.", "leaders": [{"country": "China", "name": "Hua Guofeng", "title": "Acting Premier", "c": "#EF4444"}, {"country": "China", "name": "Deng Xiaoping", "title": "Rising reformer", "c": "#F59E0B"}, {"country": "Russia", "name": "Leonid Brezhnev", "title": "General Secretary", "c": "#8B5CF6"}, {"country": "USA", "name": "Jimmy Carter", "title": "President (from Jan 1977)", "c": "#10B981"}], "events": [{"title": "Mao Zedong dies", "desc": "9 September 1976: Mao dies aged 82. An estimated 700 million Chinese hear the announcement. His legacy: communist revolution but also catastrophic famine and the Cultural Revolution.", "tag": "Death", "c": "#6B7280"}, {"title": "Gang of Four arrested", "desc": "One month after Mao's death, Jiang Qing and three radical allies are arrested. Their show trial will expose the crimes of the Cultural Revolution to the Chinese public.", "tag": "Politics", "c": "#EF4444"}, {"title": "Deng Xiaoping's return", "desc": "Deng, purged twice during the Cultural Revolution, begins his return to power. His pragmatic slogan: 'It doesn't matter if a cat is black or white, as long as it catches mice.'", "tag": "Reform", "c": "#F59E0B"}, {"title": "Cultural Revolution declared over", "desc": "An estimated 1.5 million people died during the Cultural Revolution; millions more were persecuted, imprisoned, or sent to the countryside for 're-education through labour.'", "tag": "Legacy", "c": "#8B5CF6"}], "syl": "Component 1 (China): Mao's death and the post-Mao transition. How should historians assess Mao's overall legacy? Compare Deng's pragmatic reform approach with Mao's revolutionary ideology."}};
+let currentYear = 1905, currentTopic = 'all';
 
-// Embed logo
-(function() {
-  const img = document.getElementById('dh-logo');
-  img.onerror = () => {
-    img.parentElement.innerHTML = '<span style="font-family:Space Grotesk,sans-serif;font-weight:700;font-size:11px;color:#C9A84C;">DH</span>';
-  };
-})();
-
-function getEra(y) {
-  if (y < 1815) return 'Early 19th Century · Napoleonic era';
-  if (y < 1848) return 'Early 19th Century · Post-Napoleonic Europe';
-  if (y < 1870) return 'Mid-19th Century · Age of Revolution & Nationalism';
-  if (y < 1900) return 'Late 19th Century · Age of Imperialism';
-  if (y < 1914) return 'Early 20th Century · Belle Époque';
-  if (y < 1918) return 'Early 20th Century · First World War';
-  if (y < 1929) return 'Inter-war period · 1920s';
-  if (y < 1939) return 'Inter-war period · Great Depression era';
-  if (y < 1945) return 'Mid-20th Century · Second World War era';
-  if (y < 1953) return 'Post-war · Early Cold War';
-  if (y < 1968) return 'Cold War · Post-war settlement';
-  if (y < 1980) return 'Cold War · Era of détente';
-  if (y < 1991) return 'Late Cold War';
-  if (y < 2001) return 'Post-Cold War · 1990s';
-  if (y < 2008) return '21st Century · War on Terror era';
-  if (y < 2016) return '21st Century · Post-financial crisis';
-  return '21st Century · Contemporary';
+function getYears() {
+  return Object.keys(H).map(Number).filter(y => currentTopic === 'all' || H[y].topic === currentTopic).sort((a,b)=>a-b);
 }
 
-function updateSliderGradient(val) {
-  const min = 1800, max = 2024;
-  const pct = ((val - min) / (max - min)) * 100;
-  document.getElementById('year-slider').style.setProperty('--pct', pct + '%');
+function renderGrid() {
+  document.getElementById('year-grid').innerHTML = getYears().map(y =>
+    `<button class="year-btn ${H[y].topic} ${y===currentYear?'active':''}" onclick="selectYear(${y})">${y}</button>`
+  ).join('');
 }
 
-function setYear(y) {
+function selectYear(y) {
   currentYear = y;
-  document.getElementById('year-slider').value = y;
   document.getElementById('year-display').textContent = y;
-  document.getElementById('year-era').textContent = getEra(y);
-  updateSliderGradient(y);
-  document.querySelectorAll('.quick-yr').forEach(b => {
-    b.classList.toggle('active', +b.textContent === y);
-  });
-  loadYear(y);
+  document.getElementById('year-era').textContent = H[y]?.era || '';
+  renderGrid();
+  renderContent(y);
+  window.scrollTo({top: document.getElementById('content-area').offsetTop - 20, behavior: 'smooth'});
 }
 
-function onYearChange(val) {
-  currentYear = +val;
-  document.getElementById('year-display').textContent = val;
-  document.getElementById('year-era').textContent = getEra(+val);
-  updateSliderGradient(+val);
-  document.querySelectorAll('.quick-yr').forEach(b => b.classList.remove('active'));
-  clearTimeout(debounceTimer);
-  debounceTimer = setTimeout(() => loadYear(+val), 600);
+function filterTopic(btn, topic) {
+  currentTopic = topic;
+  document.querySelectorAll('.topic-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderGrid();
 }
 
-async function loadYear(year) {
+function renderContent(y) {
+  const d = H[y];
+  if (!d) { document.getElementById('content-area').innerHTML = '<div class="no-data">No data for this year.</div>'; return; }
+  const leaders = d.leaders.map(l => `<div class="leader-card" style="--s-color:${l.c}"><div class="leader-country">${l.country}</div><div class="leader-name">${l.name}</div><div class="leader-title">${l.title}</div></div>`).join('');
+  const events = d.events.map(e => `<div class="event-item"><div class="event-dot" style="background:${e.c}"></div><div><div class="event-title">${e.title}</div><div class="event-desc">${e.desc}</div><span class="event-tag" style="background:${e.c}22;color:${e.c}">${e.tag}</span></div></div>`).join('');
   document.getElementById('content-area').innerHTML = `
-    <div class="loading" style="grid-column:1/-1">
-      <span class="loading-spinner">⏳</span>
-      Loading ${year}...
-    </div>`;
-
-  try {
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
-        max_tokens: 1000,
-        system: `You are a history education tool for Sixth Form students at Downe House school. 
-Return ONLY valid JSON, no markdown, no explanation. 
-For any given year, return historical data in this exact structure:
-{
-  "leaders": [
-    {"country": "United Kingdom", "name": "Person Name", "title": "Prime Minister", "color": "#hex"},
-    {"country": "United States", "name": "Person Name", "title": "President", "color": "#hex"},
-    {"country": "France", "name": "Person Name", "title": "Title", "color": "#hex"},
-    {"country": "Germany", "name": "Person Name", "title": "Title", "color": "#hex"},
-    {"country": "Russia/USSR", "name": "Person Name", "title": "Title", "color": "#hex"},
-    {"country": "China", "name": "Person Name", "title": "Title", "color": "#hex"}
-  ],
-  "events": [
-    {"title": "Event name", "desc": "1-2 sentence description for Sixth Form students", "tag": "Politics|War|Economics|Science|Culture", "tagColor": "#hex"},
-    {"title": "Event name", "desc": "1-2 sentence description", "tag": "Tag", "tagColor": "#hex"},
-    {"title": "Event name", "desc": "1-2 sentence description", "tag": "Tag", "tagColor": "#hex"},
-    {"title": "Event name", "desc": "1-2 sentence description", "tag": "Tag", "tagColor": "#hex"},
-    {"title": "Event name", "desc": "1-2 sentence description", "tag": "Tag", "tagColor": "#hex"}
-  ],
-  "context": {
-    "population": "World population figure e.g. 2.3 billion",
-    "technology": "Most significant technology of this era in 5 words",
-    "britain": "What Britain was doing/experiencing in 8 words"
-  },
-  "snapshot": "A vivid 2-sentence summary of what the world felt like in this year, written for a Sixth Form student."
-}
-Use historically accurate data. For color fields use tasteful hex colors that reflect the nature of the item (e.g. red for war/conflict, blue for politics, green for economics, purple for science).`,
-        messages: [{ role: 'user', content: `Give me the historical data for the year ${year}.` }]
-      })
-    });
-
-    const data = await response.json();
-    const text = data.content?.find(b => b.type === 'text')?.text || '';
-    const clean = text.replace(/```json|```/g, '').trim();
-    const hist = JSON.parse(clean);
-    renderYear(year, hist);
-  } catch (e) {
-    console.error(e);
-    document.getElementById('content-area').innerHTML = `
-      <div class="loading" style="grid-column:1/-1">
-        <span>⚠️</span><br>
-        Couldn't load data for ${year}. Try another year or check your connection.
-      </div>`;
-  }
-}
-
-function renderYear(year, hist) {
-  const leadersHtml = hist.leaders.map(l => `
-    <div class="leader-card" style="--s-color:${l.color}">
-      <div class="leader-country">${l.country}</div>
-      <div class="leader-name">${l.name}</div>
-      <div class="leader-title">${l.title}</div>
-    </div>`).join('');
-
-  const eventsHtml = hist.events.map(e => `
-    <div class="event-item">
-      <div class="event-dot" style="background:${e.tagColor}"></div>
-      <div class="event-body">
-        <div class="event-title">${e.title}</div>
-        <div class="event-desc">${e.desc}</div>
-        <span class="event-tag" style="background:${e.tagColor}20;color:${e.tagColor}">${e.tag}</span>
-      </div>
-    </div>`).join('');
-
-  document.getElementById('content-area').innerHTML = `
-    <div class="section-card full">
-      <div class="section-title"><span class="section-title-icon">🌍</span>The world in ${year}</div>
-      <p style="font-size:14px;color:var(--muted);line-height:1.7;">${hist.snapshot}</p>
-    </div>
-
-    <div class="section-card">
-      <div class="section-title"><span class="section-title-icon">👑</span>World leaders</div>
-      <div class="leaders-grid">${leadersHtml}</div>
-    </div>
-
-    <div class="section-card">
-      <div class="section-title"><span class="section-title-icon">📅</span>Key events of ${year}</div>
-      <div class="events-list">${eventsHtml}</div>
-    </div>
-
-    <div class="section-card full">
-      <div class="section-title"><span class="section-title-icon">📊</span>Context</div>
-      <div class="context-grid">
-        <div class="context-item">
-          <div class="context-label">World population</div>
-          <div class="context-value">${hist.context.population}</div>
-        </div>
-        <div class="context-item">
-          <div class="context-label">Defining technology</div>
-          <div class="context-value">${hist.context.technology}</div>
-        </div>
-        <div class="context-item">
-          <div class="context-label">Britain in ${year}</div>
-          <div class="context-value" style="font-size:13px;font-weight:500;">${hist.context.britain}</div>
-        </div>
-      </div>
-    </div>`;
+    <div class="section-card full"><div class="section-title">&#127757; The world in ${y}</div><p class="snapshot">${d.snap}</p></div>
+    <div class="section-card"><div class="section-title">&#128081; World leaders</div><div class="leaders-grid">${leaders}</div></div>
+    <div class="section-card"><div class="section-title">&#128197; Key events</div><div class="events-list">${events}</div></div>
+    <div class="section-card full"><div class="section-title">&#128218; Syllabus connection</div><div class="syllabus-box"><div class="syllabus-label">Edexcel 9HI0 relevance</div><div class="syllabus-text">${d.syl}</div></div></div>`;
 }
 
 function initTheme() {
-  const saved = localStorage.getItem('dhlab-theme') || 'dark';
-  document.documentElement.setAttribute('data-theme', saved);
-  updateIcon(saved);
+  const s = localStorage.getItem('dhlab-theme') || 'dark';
+  document.documentElement.setAttribute('data-theme', s);
+  updateIcon(s);
 }
 function toggleTheme() {
-  const cur = document.documentElement.getAttribute('data-theme') || 'dark';
-  const next = cur === 'dark' ? 'light' : 'dark';
-  document.documentElement.setAttribute('data-theme', next);
-  localStorage.setItem('dhlab-theme', next);
-  updateIcon(next);
+  const c = document.documentElement.getAttribute('data-theme') || 'dark';
+  const n = c === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', n);
+  localStorage.setItem('dhlab-theme', n);
+  updateIcon(n);
 }
 function updateIcon(t) {
   const b = document.getElementById('theme-toggle-btn');
-  if (b) b.textContent = t === 'dark' ? '☀️' : '🌙';
+  if (b) b.innerHTML = t === 'dark' ? '&#9728;&#65039;' : '&#127769;';
 }
 
-// Embed DH logo
-(function embedLogo() {
-  const img = document.getElementById('dh-logo');
-  if (!img) return;
-  img.onerror = () => {
-    img.parentElement.innerHTML = '<span style="font-family:Space Grotesk,sans-serif;font-weight:700;font-size:11px;color:#C9A84C;">DH</span>';
-  };
-})();
-
 initTheme();
-updateSliderGradient(1944);
-loadYear(1944);
+renderGrid();
+selectYear(1905);
 </script>
 </body>
 </html>
