@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
@@ -48,7 +49,7 @@ header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1.25rem 2.5rem;
+  padding: 1.1rem 2rem;
   border-bottom: 1px solid var(--border);
   position: sticky;
   top: 0;
@@ -58,14 +59,9 @@ header {
   gap: 1rem;
 }
 .logo-wrap { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; }
-.dh-chip {
-  width: 32px; height: 32px;
-  background: #1B2A4A;
-  border-radius: 7px;
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
-}
-.dh-chip img { width: 20px; height: 20px; object-fit: contain; }
+.dh-chip { width:36px; height:36px; background:#1B2A4A; border-radius:8px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.dh-chip img { width:22px; height:22px; object-fit:contain; }
+[data-theme="light"] .dh-chip { background: #1B4332; }
 .logo-text {
   font-family: var(--font-display);
   font-weight: 700;
@@ -74,7 +70,7 @@ header {
   color: var(--white);
 }
 .logo-sub {
-  font-size: 11px;
+  font-size: 1.1rem;
   color: var(--muted);
   font-weight: 400;
   display: block;
@@ -90,18 +86,11 @@ header {
   border-radius: 20px;
   padding: 4px 12px;
 }
-.theme-btn {
-  width: 34px; height: 34px;
-  border-radius: 8px;
-  border: 1px solid var(--border);
-  background: var(--bg-card);
-  color: var(--white);
-  cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 15px;
-  transition: border-color 0.18s;
-}
-.theme-btn:hover { border-color: var(--green-bright); }
+.theme-toggle { display:flex; align-items:center; gap:6px; background:var(--bg-card); border:1px solid var(--border); border-radius:20px; padding:5px 14px; cursor:pointer; transition:all .18s; }
+.theme-toggle:hover { border-color:#2D6A4F; }
+.toggle-icon { font-size:15px; }
+.toggle-label { font-size:12px; font-weight:600; color:var(--muted); }
+
 
 /* HERO */
 .hero {
@@ -274,7 +263,7 @@ header {
     </div>
   </a>
   <div class="header-right">
-    <button class="theme-btn" id="theme-toggle-btn" onclick="toggleTheme()">🌙</button>
+    <button class="theme-toggle" id="theme-toggle-btn" onclick="toggleTheme()"><span class="toggle-icon">🌙</span><span class="toggle-label" id="toggle-label">Dark</span></button>
     <span class="badge">Sixth Form</span>
   </div>
 </header>
@@ -285,7 +274,7 @@ header {
   <p>Hands-on simulators and explorers for Downe House students across Economics, History, Geography, Politics, Science, Maths, and Psychology.</p>
   <div class="stat-row">
     <div class="stat"><span class="stat-n">7</span><span class="stat-l">Subjects</span></div>
-    <div class="stat"><span class="stat-n">6+</span><span class="stat-l">Simulators live</span></div>
+    <div class="stat"><span class="stat-n">9+</span><span class="stat-l">Simulators live</span></div>
     <div class="stat"><span class="stat-n">∞</span><span class="stat-l">Experiments</span></div>
   </div>
 </div>
@@ -334,37 +323,56 @@ header {
       <span class="card-arrow">→ Open History Lab</span>
     </a>
 
-    <div class="subject-card soon" style="--s-color:#3A86FF">
-      <div class="card-top">
-        <div class="card-icon">🌍</div>
-        <span class="soon-badge">Coming soon</span>
-      </div>
-      <div class="card-body">
-        <p class="card-title">Geography — Development Indicators</p>
-        <p class="card-desc">Compare countries on HDI, GDP per capita, literacy, life expectancy and more. Watch how indicators shift over decades.</p>
-      </div>
-      <div class="card-tools">
-        <span class="tool-chip">HDI</span>
-        <span class="tool-chip">Population</span>
-        <span class="tool-chip">Development</span>
-      </div>
-    </div>
-
-    <div class="subject-card soon" style="--s-color:#FF6B6B">
+    <a href="geography/tectonics.html" class="subject-card" style="--s-color:#FF6B6B">
       <div class="card-top">
         <div class="card-icon">🌋</div>
-        <span class="soon-badge">Coming soon</span>
+        <span class="card-dept" style="--s-color:#FF6B6B">Geography</span>
       </div>
       <div class="card-body">
-        <p class="card-title">Geography — Tectonic Hazards</p>
-        <p class="card-desc">Explore plate boundaries, earthquake zones, and volcanic activity. Click any region to see recent events and risk profiles.</p>
+        <p class="card-title">Tectonic Hazards Explorer</p>
+        <p class="card-desc">Explore plate boundaries, earthquake zones, and volcanic activity across six tectonic regions. Key events, impacts, and OCR H481 syllabus connections.</p>
       </div>
       <div class="card-tools">
         <span class="tool-chip">Plate tectonics</span>
         <span class="tool-chip">Earthquakes</span>
         <span class="tool-chip">Volcanoes</span>
       </div>
-    </div>
+      <span class="card-arrow">→ Open Tectonics</span>
+    </a>
+
+    <a href="geography/development.html" class="subject-card" style="--s-color:#3A86FF">
+      <div class="card-top">
+        <div class="card-icon">🌍</div>
+        <span class="card-dept" style="--s-color:#3A86FF">Geography</span>
+      </div>
+      <div class="card-body">
+        <p class="card-title">Development Indicators</p>
+        <p class="card-desc">Compare countries on HDI, GDP per capita, life expectancy, literacy and inequality. Watch how indicators have shifted over decades.</p>
+      </div>
+      <div class="card-tools">
+        <span class="tool-chip">HDI</span>
+        <span class="tool-chip">Global connections</span>
+        <span class="tool-chip">Inequality</span>
+      </div>
+      <span class="card-arrow">→ Open Development</span>
+    </a>
+
+    <a href="geography/climate.html" class="subject-card" style="--s-color:#10B981">
+      <div class="card-top">
+        <div class="card-icon">🌿</div>
+        <span class="card-dept" style="--s-color:#10B981">Geography</span>
+      </div>
+      <div class="card-body">
+        <p class="card-title">Climate & Ecosystems</p>
+        <p class="card-desc">Explore climate change data and five major ecosystems. Temperature anomalies, CO₂ trends, ecosystem threats and Earth's Life Support Systems.</p>
+      </div>
+      <div class="card-tools">
+        <span class="tool-chip">Climate change</span>
+        <span class="tool-chip">Ecosystems</span>
+        <span class="tool-chip">Carbon cycle</span>
+      </div>
+      <span class="card-arrow">→ Open Climate</span>
+    </a>
 
     <div class="subject-card soon" style="--s-color:#9D7BFF">
       <div class="card-top">
@@ -447,22 +455,26 @@ header {
 })();
 
 function initTheme() {
-  const saved = localStorage.getItem('dhlab-theme') || 'dark';
-  document.documentElement.setAttribute('data-theme', saved);
-  updateIcon(saved);
+  const s = localStorage.getItem('dhlab-theme') || 'dark';
+  document.documentElement.setAttribute('data-theme', s);
+  updateToggle(s);
 }
 function toggleTheme() {
   const cur = document.documentElement.getAttribute('data-theme') || 'dark';
   const next = cur === 'dark' ? 'light' : 'dark';
   document.documentElement.setAttribute('data-theme', next);
   localStorage.setItem('dhlab-theme', next);
-  updateIcon(next);
+  updateToggle(next);
 }
-function updateIcon(t) {
-  const b = document.getElementById('theme-toggle-btn');
-  if (b) b.textContent = t === 'dark' ? '☀️' : '🌙';
+function updateToggle(t) {
+  const btn = document.getElementById('theme-toggle-btn');
+  const lbl = document.getElementById('toggle-label');
+  const icon = btn ? btn.querySelector('.toggle-icon') : null;
+  if (icon) icon.textContent = t === 'dark' ? '🌙' : '☀️';
+  if (lbl) lbl.textContent = t === 'dark' ? 'Dark' : 'Light';
 }
 initTheme();
 </script>
 </body>
 </html>
+

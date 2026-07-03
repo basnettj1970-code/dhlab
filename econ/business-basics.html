@@ -57,7 +57,7 @@ header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1.25rem 2rem;
+  padding: 1.1rem 2rem;
   border-bottom: 1px solid var(--border);
   position: sticky;
   top: 0;
@@ -391,21 +391,24 @@ update();
 // Theme toggle — persists per-tab in memory (no localStorage per artifact rules,
 // but standalone files on GitHub Pages CAN use localStorage safely)
 function initTheme() {
-  const saved = localStorage.getItem('macrolab-theme') || 'dark';
-  document.documentElement.setAttribute('data-theme', saved);
-  updateToggleIcon(saved);
+  const s = localStorage.getItem('dhlab-theme') || 'dark';
+  document.documentElement.setAttribute('data-theme', s);
+  updateToggle(s);
 }
 function toggleTheme() {
   const current = document.documentElement.getAttribute('data-theme') || 'dark';
   const next = current === 'dark' ? 'light' : 'dark';
   document.documentElement.setAttribute('data-theme', next);
   localStorage.setItem('macrolab-theme', next);
-  updateToggleIcon(next);
+  updateToggle(next);
   window.dispatchEvent(new CustomEvent('themechange', { detail: next }));
 }
-function updateToggleIcon(theme) {
+function updateToggle(t) {
   const btn = document.getElementById('theme-toggle-btn');
-  if (btn) btn.textContent = theme === 'dark' ? '☀️' : '🌙';
+  const lbl = document.getElementById('toggle-label');
+  const icon = btn ? btn.querySelector('.toggle-icon') : null;
+  if (icon) icon.textContent = t === 'dark' ? '🌙' : '☀️';
+  if (lbl) lbl.textContent = t === 'dark' ? 'Dark' : 'Light';
 }
 initTheme();
 

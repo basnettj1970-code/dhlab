@@ -57,7 +57,7 @@ header {
   display: flex;
   flex-direction: column;
   gap: 0.85rem;
-  padding: 1.1rem 2rem 0.85rem;
+  padding: 1.1rem 2rem;
   border-bottom: 1px solid var(--border);
   position: sticky;
   top: 0;
@@ -768,16 +768,16 @@ update();
 document.getElementById('panel-sim').style.display = 'flex';
 
 function initTheme() {
-  const saved = localStorage.getItem('macrolab-theme') || 'dark';
-  document.documentElement.setAttribute('data-theme', saved);
-  updateToggleIcon(saved);
+  const s = localStorage.getItem('dhlab-theme') || 'dark';
+  document.documentElement.setAttribute('data-theme', s);
+  updateToggle(s);
 }
 function toggleTheme() {
   const current = document.documentElement.getAttribute('data-theme') || 'dark';
   const next = current === 'dark' ? 'light' : 'dark';
   document.documentElement.setAttribute('data-theme', next);
   localStorage.setItem('macrolab-theme', next);
-  updateToggleIcon(next);
+  updateToggle(next);
   const isLight = next === 'light';
   const gridColor = isLight ? 'rgba(26,31,43,0.08)' : 'rgba(240,237,232,0.05)';
   const tickColor = isLight ? 'rgba(26,31,43,0.4)' : 'rgba(240,237,232,0.4)';
@@ -787,11 +787,15 @@ function toggleTheme() {
   histChart.options.scales.y.ticks.color = tickColor;
   histChart.update();
 }
-function updateToggleIcon(theme) {
+function updateToggle(t) {
   const btn = document.getElementById('theme-toggle-btn');
-  if (btn) btn.textContent = theme === 'dark' ? '☀️' : '🌙';
+  const lbl = document.getElementById('toggle-label');
+  const icon = btn ? btn.querySelector('.toggle-icon') : null;
+  if (icon) icon.textContent = t === 'dark' ? '🌙' : '☀️';
+  if (lbl) lbl.textContent = t === 'dark' ? 'Dark' : 'Light';
 }
 initTheme();
 </script>
 </body>
 </html>
+
