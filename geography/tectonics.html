@@ -1,0 +1,340 @@
+
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tectonic Hazards — DH Lab Geography</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0D1B0F;--bg-card:#132017;--bg-mid:#1E3326;--green:#2D6A4F;--green-dim:rgba(45,106,79,0.18);--green-bright:#52B788;--amber:#F5A623;--coral:#FF6B6B;--blue:#3B82F6;--purple:#A855F7;--white:#F0EDE8;--muted:rgba(240,237,232,0.52);--border:rgba(240,237,232,0.08);--font-display:"Space Grotesk",sans-serif;--font-body:"Inter",sans-serif}
+[data-theme="light"]{--bg:#F0F7F2;--bg-card:#FFFFFF;--bg-mid:#E8F5EE;--green:#1B4332;--green-dim:rgba(27,67,50,0.10);--green-bright:#2D6A4F;--white:#1A1F2B;--muted:rgba(26,31,43,0.55);--border:rgba(26,31,43,0.10)}
+body{background:var(--bg);color:var(--white);font-family:var(--font-body);min-height:100vh;transition:background .25s,color .25s}
+header{display:flex;flex-direction:column;border-bottom:1px solid var(--border);position:sticky;top:0;background:color-mix(in srgb,var(--bg) 96%,transparent);backdrop-filter:blur(12px);z-index:100}
+.header-top{display:flex;align-items:center;justify-content:space-between;padding:1.1rem 2rem;gap:1rem}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--white);font-family:var(--font-display);font-weight:700;font-size:1.1rem}
+.dh-chip{width:36px;height:36px;background:#1B2A4A;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+[data-theme="light"] .dh-chip{background:#1B4332}
+.dh-chip img{width:22px;height:22px;object-fit:contain}
+.site-nav{display:flex;gap:4px;background:var(--bg-card);padding:4px;border-radius:10px;border:1px solid var(--border);flex-wrap:wrap}
+.nav-link{font-size:13px;font-weight:500;padding:6px 14px;border-radius:7px;text-decoration:none;color:var(--muted);transition:all .18s;white-space:nowrap}
+.nav-link.active{background:var(--bg-mid);color:var(--white)}
+.nav-link:hover:not(.active){color:var(--white)}
+.header-right{display:flex;align-items:center;gap:10px}
+.badge{font-size:11px;font-weight:500;background:var(--green-dim);color:var(--green-bright);border:1px solid color-mix(in srgb,var(--green) 30%,transparent);border-radius:20px;padding:4px 12px}
+.theme-toggle{display:flex;align-items:center;gap:6px;background:var(--bg-card);border:1px solid var(--border);border-radius:20px;padding:5px 14px;cursor:pointer;transition:all .18s}
+.theme-toggle:hover{border-color:var(--green-bright)}
+.toggle-icon{font-size:15px}
+.toggle-label{font-size:12px;font-weight:600;color:var(--muted)}
+
+/* PAGE LAYOUT */
+.page{max-width:1300px;margin:0 auto;padding:1.5rem 2rem;display:grid;grid-template-columns:320px 1fr;gap:1.5rem;min-height:calc(100vh - 70px)}
+.sidebar{display:flex;flex-direction:column;gap:1.25rem}
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:1.25rem}
+.card-title{font-family:var(--font-display);font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:1rem;padding-bottom:.6rem;border-bottom:1px solid var(--border)}
+
+/* REGION BUTTONS */
+.region-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.region-btn{background:var(--bg-mid);border:1px solid var(--border);border-radius:10px;padding:10px;cursor:pointer;text-align:left;color:var(--white);transition:all .18s}
+.region-btn:hover{border-color:var(--green-bright)}
+.region-btn.active{border-color:var(--green-bright);background:var(--green-dim)}
+.rb-icon{font-size:18px;display:block;margin-bottom:3px}
+.rb-name{font-family:var(--font-display);font-size:12px;font-weight:600;display:block}
+.rb-sub{font-size:10px;color:var(--muted);display:block;margin-top:1px}
+
+/* HAZARD TYPE FILTER */
+.filter-row{display:flex;gap:6px;flex-wrap:wrap}
+.filter-btn{font-size:11px;font-weight:600;padding:4px 12px;border:1px solid var(--border);border-radius:20px;background:transparent;color:var(--muted);cursor:pointer;transition:all .18s}
+.filter-btn:hover{color:var(--white)}
+.filter-btn.active{color:var(--white)}
+.filter-btn[data-type="earthquake"].active{background:rgba(239,68,68,.15);border-color:#EF4444;color:#FCA5A5}
+.filter-btn[data-type="volcano"].active{background:rgba(245,166,35,.15);border-color:#F5A623;color:#FCD34D}
+.filter-btn[data-type="tsunami"].active{background:rgba(59,130,246,.15);border-color:#3B82F6;color:#93C5FD}
+.filter-btn[data-type="all"].active{background:var(--green-dim);border-color:var(--green-bright);color:var(--green-bright)}
+
+/* MAIN CONTENT */
+.main{display:flex;flex-direction:column;gap:1.25rem}
+.hero-card{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:1.5rem;border-left:3px solid var(--green-bright)}
+.hero-title{font-family:var(--font-display);font-size:1.4rem;font-weight:700;margin-bottom:.4rem}
+.hero-sub{font-size:13px;color:var(--muted);line-height:1.6}
+
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.stat-card{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:1rem}
+.stat-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px}
+.stat-value{font-family:var(--font-display);font-size:1.5rem;font-weight:700;line-height:1}
+.stat-sub{font-size:11px;color:var(--muted);margin-top:3px}
+
+.events-list{display:flex;flex-direction:column;gap:10px}
+.event-card{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:1rem 1.25rem;border-left:3px solid var(--e-color,var(--border))}
+.event-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px}
+.event-name{font-family:var(--font-display);font-size:14px;font-weight:600}
+.event-year{font-size:11px;color:var(--muted);font-weight:500}
+.event-desc{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:6px}
+.event-tags{display:flex;gap:6px;flex-wrap:wrap}
+.event-tag{font-size:10px;padding:2px 8px;border-radius:4px;font-weight:500}
+
+.syllabus-card{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:1.25rem}
+.syl-label{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--green-bright);margin-bottom:6px}
+.syl-text{font-size:13px;color:var(--muted);line-height:1.6}
+
+/* MAP SVG */
+.map-card{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:1.25rem;overflow:hidden}
+.world-map{width:100%;height:280px;border-radius:10px;background:var(--bg-mid);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.map-placeholder{font-size:13px;color:var(--muted);text-align:center}
+.plate-label{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.08em}
+
+@media(max-width:900px){.page{grid-template-columns:1fr}.stats-grid{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-top">
+    <a href="../index.html" class="logo">
+      <div class="dh-chip"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA+kAAAQLCAYAAAD3Fuh4AAAACXBIWXMAAC4jAAAuIwF4pT92AAAgAElEQVR4nOzd/VFdydXo4TWu+R9uBHAjgDcC4QiEI5AmAmsiEIpgNBEMisAoAkMEhgheiOBCBLq1x300RwgE53A+Vq9+nirKrnHZtdk9dvmn1bv7py9fvgQAAACwfX+zBgAAAJCDSAcAAIAkRDoAAAAkIdIBAAAgCZEOAAAASYh0AAAASEKkAwAAQBIiHQAAAJIQ6QAAAJCESAcAAIAkRDoAAAAkIdIBAAAgCZEOAAAASYh0AAAASEKkAwAAQBIiHQAAAJIQ6QAAAJCESAcAAIAkRDoAAAAkIdIBAAAgCZEOAAAASYh0AAAASEKkAwAAQBIiHQAAAJIQ6QAAAJCESAcAAIAkRDoAAAAkIdIBAAAgCZEOAAAASYh0AAAASEKkAwAAQBIiHQAAAJIQ6QAAAJCESAcAAIAkRDoAAAAkIdIBAAAgCZEOAAAASYh0AAAASEKkAwAAQBIiHQAAAJIQ6QAAAJCESAcAAIAkRDoAAAAkIdIBAAAgCZEOAAAASYh0AAAASEKkAwAAQBIiHQAAAJIQ6QAAAJCESAcAAIAkRDoAAAAkIdIBAAAgCZEOAAAASYh0AAAASEKkAwAAQBIiHQAAAJIQ6QAAAJCESAcAAIAkRDoAAAAkIdIBAAAgCZEOAAAASYh0AAAASEKkAwAAQBIiHQAAAJIQ6QAAAJCESAcAAIAkRDoAAAAkIdIBAAAgCZEOAAAASYh0AAAASEKkAwAAQBIiHQAAAJIQ6QAAAJCESAcAAIAkRDoAAAAkIdIBAAAgCZEOAAAASYh0AAAASEKkAwAAQBIiHQAAAJIQ6QAAAJCESAcAAIAkRDoAAAAkIdIBAAAgCZEOAAAASYh0AAAASEKkAwAAQBIiHQAAAJIQ6QAAAJCESAcAAIAkRDoAAAAkIdIBAAAgCZEOAAAASYh0AAAASEKkAwAAQBIiHQAAAJIQ6QAAAJCESAcAAIAkRDoAAAAkIdIBAAAgCZEOAAAASYh0AAAASEKkAwAAQBIiHQAAAJIQ6QAAAJCESAcAAIAkRDoAAAAkIdIBAAAgCZEOAAAASYh0AAAASEKkAwAAQBIiHQAAAJIQ6QAAAJCESAcAAIAkRDoAAAAkIdIBAAAgCZEOAAAASYh0AAAASEKkAwAAQBIiHQAAAJIQ6QAAAJCESAcAAIAkRDoAAAAkIdIBAAAgCZEOAAAASYh0AAAASEKkAwAAQBIiHQAAAJIQ6QAAAJCESAcAAIAkRDoAAAAkIdIBAAAgCZEOAAAASYh0AAAASEKkAwAAQBIiHQAAAJIQ6QAAAJCESAcAAIAkRDoAAAAkIdIBAAAgCZEOAAAASYh0AAAASEKkAwAAQBIiHQAAAJIQ6QAAAJCESAcAAIAkRDoAAAAkIdIBAAAgCZEOAAAASYh0AAAASEKkAwAAQBIiHQAAAJIQ6QAAAJCESAcAAIAkRDoAAAAkIdIBAAAgCZEOAAAASYh0AAAASEKkAwAAQBIiHQAAAJIQ6QAAAJCESAcAAIAkRDoAAAAkIdIBAAAgCZEOAAAASYh0AAAASEKkAwAAQBIiHQAAAJIQ6QAAAJCESAcAAIAkRDoAAAAk8bOFgBd5236AnK7bz0Me+tcuI+LWWgIA2yLS4WX2I+KVdwhpvfS/nzdzIX/bIn7m/JG/DgCwtJ++fPni7cHyTiLivfcHNPNRP4v42XT+R1N9AIA/maQDwOrstZ/4wRT/Zi7Y539stQcARDoAbNgs5B+L+Iu5LfSziD+3SAAwBpEOALnM4v31vae6a+E+i/dL8Q4A9Yh0AOjDTgv4+xP4m7lp+3zEAwAdEukA0LfHts9fzEX7pRPoAaAPIh0Aanpo6n5h4g4AuYl0ABjH/XC/mfu2/dy0HQC2T6QDwLhmW+XnD6m7mIt2B9MBwIaJdABg3mza/r79NdEOABv0Ny8bAPiBWbD/OyK+tFA/iYhDLw0AVk+kAwCLmEX7fyLiNiLOIuJtROx7iwDwcra7AwDL2mnfs8++ab9qk/YzW+MBYDkm6QDAqhxExD/b1vj5KfuuNwwAzyPSAYB1mE3Z/4iI/9eud3tnWzwA/JhIBwA2YZqy/xYR/9uC/aPD5wDgeyIdANi02bb46fC5a8EOAH8R6QDANu0JdgD4i0gHALK4H+y+YQdgOCIdAMho79437E6JB2AIIh0AyO5g7pT46Vq3YysGQFUiHQDoyXSt27/aPey+XwegHJEOAPRoZ+77ddvhAShDpAMAvZtth58Omzs1XQegZyIdAKhimq6/MV0HoGciHQCoaH66/tFVbgD0QqQDAJXNvl2frnI7dzI8ANmJdABgFK/ayfDXtsIDkJVIBwBGsze3Ff7EVngAMhHpAMCopq3w79tWeKfCA5CCSAcA+OtU+Om79SPvA4BtEekAAH+Zvlv/t0PmANgWkQ4A8L37h8wBwEaIdACAx80fMifWAVg7kQ4A8DSxDsBGiHQAgOcT6wCslUgHAFicWAdgLUQ6AMDy5mPd1W0AvJhIBwB4ub25q9vEOgBLE+kAAKszu2f9LCL2vVcAFiXSAQBW73VE/G9EnEbErvcLwHOJdACA9XnTvlc/EesAPIdIBwBYr52IeB8Rl06CB+ApIh0AYDNmJ8E7XA6AR4l0AIDNmh0u53t1AL4j0gEAtmP2vfo77x+AGZEOALA90/fqv7Xv1W2BB0CkAwAkcGALPAAh0gEAUrEFHmBwIh0AIJfZFvjpFPhDawMwFpEOAJDTdAr8fyLixPoAjONnaw084MJLoXOHbRoJFbyPiOO2Bf7cigLUJtKBhzhhmMoO7x3MtXtvS/F++5n9awf+biCB2cFyv7fJ+q1FAajppy9fvlhaWN5Jm3BU85O/J+A78zE/C/35v/bKK2NDbiLirak6QE0m6QDwPLdzUfSjODqci/f5fxTxrMqeqTpAXSbp8DIm6cAiZtE+21J/ZEs9L2SqDlCMSToAbM7tD2JqFu+HLd7328QUfmQ2Vf/gFHiAGkzS4WVM0oF1mk3e539M3XnMVZuqX3pDAP0ySQeAvGaT9/vT96O5aD8ycac5aPeq/xoRH70UgD6JdADoz/1w350L9iOH1A3vt3av+rFD5QD6I9IBoH8PTdzno3362bHOQ5n+oOa6bX8/G/1lAPTkb1YLAEq6bFuej9uk/X/aNujPEXFnyYcw/cHMv2x9B+iLg+PgZRwcB/TqsAW87fFjuGrrfT36iwDIznZ3ABjT5dwp4Lst1o8dRFfWQVtv298BkrPdHQC4beH2tt3PPtsafzX8m6nF9neADoh0AOC+2ffs05b4/xMRv7Rv2anhn22N960nQD4iHQD4kWnKftq2wk/nVfwjIj45fK57s+3vR6O/CIBsRDoAsIjZtvhdwd69afv7v9shqAAkIdIBgGU9FOz0531by11rB7B9Ih0AWIVZsPuGvU+vI+K8nUMAwBaJdABglea/Yf+/7ZT4G2+4Cwct1I9HfxEA2yTSAYB1uW6nxM+udfP9en6za9p8pw6wJSIdANiEy7nv16ft8Bfeemrv244I36kDbJhIBwA27bRd/TVth//ddD2tN237u1AH2CCRDgBsy7Qd/t3cdP3KSqRz0NbJgXIAGyLSAYAMTlsI/t1VbunsOFAOYHNEOgCQyXn7dn3aCv/BVvg0ZgfKvR39RQCsm0gHADK6bieMz7bCu8Ythz/argcA1kSkAwDZnbZr3P7hVPgU3jj5HWB9RDoA0Iuzdir838X61jn5HWBNRDoA0JvzuSvcHDK3PQdCHWD1RDoA0KvruUPmxPp2uKINYMVEOgDQO7G+XbMr2oQ6wAqIdACgCrG+PUIdYEVEOgBQzXysO2Buc6ZQ/4+71AFeRqQDAFVdOw1+K/4Q6gDLE+kAQHXnc7F+Y7U3QqgDLEmkAwCjmGJ9PyJ+iYg7q752Qh1gCSIdABjNaYv1D2J97YQ6wIJEOgAwotuIOGmnkTsJfr2EOsACRDoAMLLZSfDT9+pX/k5YG6EO8EwiHQDgrzu+f7UFfm2EOsAziHQAgL98bN+r2wK/HkId4AkiHQDgW7e2wK+VUAf4AZEOAPAwW+DXR6gDPEKkAwD82McW6xfe00oJdYAHiHQAgKdNp8AfRcQ/TNVXSqgD3CPSAQCe76wdLPfZO1sZoQ4wR6QDACxmOlju2FR9pWafFAAMT6QDACzHVH11duYO6gMYmkgHAFieqfrqCHVgeCHSAQBW4swJ8CsxhfppROwW+F0AliLSAQBWY3YC/K/e54sctIm6UAeGJNIBAFZrOgTtfyLiyntd2kHbnQAwHJEOALB6l22q/rt3u7RXbes7wFBEOgDAekyHyr1zqNyLvImIk46fH2BhIh0AYL1mh8rZ/r6c9xHxtscHB1iGSAcAWL/rFuq2vy/nj/b5AEB5Ih0AYHOm7e+/2P6+lDN3qAMjEOkAAJt12qbCtr8vxh3qwBBEOgDA5s1Of//s3S/E1WxAeSIdAGA7ptPfjyPig/e/EFezAaWJdACA7TpxTdvC3jjxHahKpAMAbN+Z79QX9oeD5ICKRDoAQA6z79QvrMeznTtIDqhGpAMA5HHbQv2TNXmWnRbqAGWIdACAfKbvrX+1Ls9y4CA5oBKRDgCQ08eI+MWBcs/iIDmgDJEOAJDXadv+LtSf5iA5oASRDgCQ26WT35/tzEFyQO9EOgBAfkL9efZ8nw70TqQDAPTh1hVtz/I6It518JwADxLpAAD9cEXb8/zm+3SgVyIdAKA/b4X6k3yfDnRJpAMA9Emo/5jv04EuiXQAgH5Nof6r9XuU79OB7oh0AIC+fYyIX6zho058nw70RKQDAPTvVKg/ase2d6AnIh0AoAah/riDtuMAID2RDgBQh1B/3D/b9XUAqYl0AIBahPrjTl3LBmQn0gEA6hHqD3MtG5CeSAcAqEmoP2y6lu0444MBhEgHAChtCvXfLfF3bHsH0hLpAAC1vYuIT9b4G65lA9IS6QAA9b0V6t+x7R1ISaQDAIxBqH/PtncgHZEOADCOaev7lfX+yrZ3IB2RDgAwjtuIOBLq33jd3glACiIdAGAss1C/se5f2fYOpCHSAQDGc9sOTbuz9n/ai4iTBM8BINIBAAZ1aZv3N/4ZEYeJngcYlEgHABjXFOq/WP+vHCIHbJ1IBwAY2xSmH0Z/Cc1BOwEfYGtEOgAAJ+5Q/+rEIXLANol0AADCHepfuTsd2CqRDgBAzF3N5sR3d6cDW/Szlw+wcl8GeaUfXFlU3sdBTru+9B3yV7NQP28T5ZFN0/T9wd8BsAUiHQB4zBTor7yd4cz+0OKPwd/DXnsPHxM8CzAQ290BALhvmiL/7q04RA7YPJEOAMBDHCT33y3/JunARol0AAAe4yC5iDeDnM0AJCHSAQB4zHSQ3LG3Y5oObI5IBwDgR6aT3n8d/A298ocVwKaIdAAAnjJNkj8P/pZM04GNEOkAADzH24i4GfhN7bV3ALBWIh0AgOfwffp/p+muZAPWSqQDAPBclxHxYeC3tdOupgNYG5EOAMAiTiLiYuA39s40HVgnkQ4AwKLeDnx/+o5D5IB1EukAACzqevBD1N5ExH6C5wAKEukAACzjLCI+DfzmThI8A1CQSAcAYFnvBr6WzTQdWAuRDgDAsm4H3/Zumg6snEgHAOAlziPi90HfoGk6sHIiHQCAlzoZeNu7aTqwUiIdAICXGnnbu2k6sFIiHQCAVRh527tpOrAyIh0AgFUZddu7aTqwMiIdAIBVGXnbu2k6sBIiHQCAVZq2vX8e8I2apgMrIdIBAFi1aZp+N+BbNU0HXkykAwCwareDButxROwmeA6gYyIdAIB1+BgRF4O92Z2IeJfgOYCOiXQAANZlxGB9Z5oOvIRIBwBgXS4HvDt9p217B1iKSAcAYJ1OBjxEzgFywNJEOgAA6zTiIXJ7A98XD7yQSAcAYN2mQ+SuBnvLIh1YikgHAGATRjtE7lVEHCZ4DqAzIh0AgE04j4jPg71p17EBCxPpAABsymjR+sZ1bMCiRDoAAJtyPeCVbKbpwEJEOgAAmzTalWwOkAMWItIBANik23ba+yim69iO/R0GPJdIBwBg0z4ONk235R14NpEOAMCm3Q4WrtN1bPsJngPogEgHAGAbTiPiZqA3b5oOPItIBwBgW04GevMOkAOeRaQDALAtI03Td4Q68BwiHQCAbRppmu6Ud+BJIh0AgG0aaZr+2gFywFNEOgAA2+bbdIBGpAMAsG0jTdNFOvBDIh0AgAxGmabvRcRRgucAkhLpAABkYJoODC9EOgAAiZwOshhOeQceJdIBAMjiY0TcDbAa7kwHHiXSAQDI4raF+ghM04EHiXQAADIZZcv7dGf6boLnAJIR6QAAZHIdEZ8GWRHTdOA7Ih0AgGxGuY5NpAPfEekAAGQzTdMvBlgVW96B74h0AAAycoAcMCSRDgBARmcRcTPAyoh04BsiHQCArEaYptvyDnxDpAMAkNUo17GZpgNfiXQAALK6HeQ6NpEOfCXSAQDIbIRpui3vwFciHQCAzM4dIAeMRKQDAJDdCAfIHSV4BiABkQ4AQHYjbHk3SQf+JNIBAMhuhAPkdkzTgRDpAAB04myAhTJNB0Q6AABdOBvgADmRDoh0AAC6UX2avhcR+wmeA9gikQ4AQC8cIAeUJ9IBAOjFZURcFV8th8fB4EQ6AAA9qT5Nf53gGYAtEukAAPRkhFPeTdNhYCIdAICeXA+w5d136TAwkQ4AQG+qb3k3SYeBiXQAAHpTfcv7QUTsJngOYAtEOgAAvRlhy7tpOgxKpAMA0CNb3oGSRDoAAD2qvuVdpMOgRDoAAD2qvuXdd+kwKJEOAECvbHkHyhHpAAD06rz4yol0GJBIBwCgV5cRcVN49UQ6DEikAwDQs8oHyPkuHQYk0gEA6Fn1Le+HCZ4B2CCRDgBAz1zFBpQi0gEA6N3nwiso0mEwIh0AgN5V3vJuuzsMRqQDANC7ypG+I9RhLCIdAIDeVb+KTaTDQEQ6AAAVVJ6m+y4dBiLSAQCowHfpQAkiHQCACipH+kGCZwA2RKQDAFDBdfHv0m15h0GIdAAAqrDlHeieSAcAoAqRDnRPpAMAUEXlSN9P8AzABoh0AACqqPxd+qsEzwBsgEgHAKCSy8Kracs7DECkAwBQiS3vQNdEOgAAlZikA10T6QAAVFJ5ku6udBiASAcAoJqLoitquzsMQKQDAFBN1S3vewmeAVgzkQ4AQDWVv0u35R2KE+kAAFRTOdJ3EzwDsEYiHQCAapzwDnRLpAMAUFHVw+NEOhQn0gEAqKjqNN12dyhOpAMAUNF10d/rVYJnANZIpAMAUJHD44AuiXQAACo6L7yqvkuHwkQ6AABV3RT9vfYTPAOwJiIdAICqqn6XLtKhMJEOAEBVVbe82+4OhYl0AACqui36ezk4DgoT6QAAVFX1hHeTdChMpAMAUFXVSN9J8AzAmoh0AACqqrrdPRweB3WJdAAAKrso+ruJdChKpAMAUFnVabpIh6JEOgAAlVX9Ll2kQ1EiHQCAyip/lw4UJNIBAKis6iT9KMEzAGsg0gEAqMwkHeiKSAcAoDLfpANdEekAAFR3V/D320vwDMAaiHQAAKqrOk0HChLpAADQp0PrBvWIdAAAqjsv+vvtJngGYMVEOgAAACQh0gEAqO666O9nuzsUJNIBAKiuaqTb7g4FiXQAAABIQqQDAFCdSTrQDZEOAEB1vkkHuvGzpQJgSUcRceLllbY/+gsAgE0T6QAs61X7AejBTUTsWSkgO9vdAQAYQdUt70AxIh0AAPpkNxMUJNIBAAAgCZEOAMAIbHcHuiDSAQAYgUgHuiDSAQAAIAmRDgAA/dq1dlCLSAcAgH4dWjuoRaQDADCCW6sM9ECkAwAwgkurDPRApAMAAEASIh0AAACSEOkAAACQhEgHAACAJEQ6AAAAJCHSAQAAIAmRDgAAAEmIdAAAAEhCpAMAAEASIh0AAACSEOkAAACQhEgHAACAJEQ6AAAAJCHSAQAAIAmRDgAAAEmIdAAAAEhCpAMAAEASIh0AAACSEOkAAACQhEgHAACAJEQ6AAAAJCHSAQAYwaFVBnog0gEAGMGuVQZ6INIBAKBf59YOahHpAAAAkIRIBwAAgCREOgAAI9i3ykAPRDoAACMQ6UAXRDoAAPTpxrpBPSIdAAD6dG3doB6RDgDACA6tMtADkQ4AwAh2rDLQA5EOAAB9urVuUI9IBwCguqonu18meAZgxUQ6AADVuX4N6IZIBwAAgCREOgAA1VWdpJ8neAZgxUQ6AADV2e4OdEOkAwAAQBIiHQCA6o6K/n5Od4eCRDoAAPTJPelQkEgHAKC6QysM9EKkAwBQ3U7B3+8iwTMAayDSAQCozMnuQFdEOgAAlVWN9OsEzwCsgUgHAKAykQ505WfLBcCSbvyfxPIOi37Ly1iqRrqT3aEokQ7Ask4j4sTbK+08Il6N/hLoXtWT3d2RDkXZ7g4AQGW7VhfoiUgHAKCyqpP08wTPAKyBSAcAoKpd5yoAvRHpAABUVXWKfpHgGYA1EekAAFRV9WR3oDCRDgBAVVUj3ffoUJhIBwCgqqOiv5c70qEwkQ4AQFVVJ+nuSIfCRDoAAFXtFf29rhM8A7AmIh0AgIqqbnUPkQ61iXQAACqqutX9KsEzAGsk0gEAqKjqHekOjYPiRDoAABVVjXTXr0FxIh0AgIqqRrrv0aE4kQ4AQDXT9+g7RVdVpENxIh0AgGqqTtHDdneoT6QDAFBN1Ui/SfAMwJqJdAAAqql6R7qt7jAAkQ4AQDWviq6ore4wAJEOAEAllb9HN0mHAYh0AAAqqRzplwmeAVgzkQ4AQCVVv0cPkQ5jEOkAAFRSdZJ+leAZgA0Q6QAAVLEbEQdFV9MUHQYh0gEAqMJWd6B7Ih0AgCpEOtA9kQ4AQBWVI90d6TAIkQ4AQAWVv0d3aBwMRKQDAFCBre5ACSIdAIAKRDpQgkgHAKAC36MDJYh0AAB6V/l79DBJh7GIdAAAendceAUvEjwDsEEiHQCA3tnqDpQh0gEA6F3lSbqt7jAYkQ4AQM8OI2Kn8AqapMNgRDoAAD2rPEW/iojbBM8BbJBIBwCgZ5Uj3RQdBiTSAQDolavXgHJEOgAAvao8RQ+TdBiTSAcAoFeVI/0mIq4TPAewYSIdAIBevS68cqboMCiRDgBAj6pvdT9L8AzAFoh0AAB65Ht0oCSRDgBAj9yPDpQk0gEA6M0U6DuFV80UHQYm0gEA6I2t7kBZIh0AgN44NA4oS6QDANCT6lvdPyd4BmCLRDoAAD15W3y1bHWHwYl0AAB6sRsRr4uvlq3uMDiRDgBAL6p/i34TEdcJngPYIpEOAEAvqm91N0UHRDoAAF3Yj4hXxZfK9+iASAcAoAvVp+h3JulAiHQAADrhVHdgCCIdAIDsjiJir/gqmaIDfxLpAABkV32KHiIdmBHpAABkNt2N/qb4Cn2OiNsEzwEkINIBAMjMFB0YikgHACCzdwOsjkgHvhLpAABkNcKBcVe2ugPzRDoAAFmNMEU/TfAMQCIiHQCAjPYj4vUAK2OrO/ANkQ4AQEYjTNGnU92vEzwHkIhIBwAgm12nugOjEukAAGRzHBE7A6yKSAe+I9IBAMjmZIAV+exUd+AhIh0AgExGuHYtTNGBx4h0AAAyGWGKfufqNeAxIh0AgCymKfqrAVbDFB14lEgHACCLEU50D1N04EdEOgAAGexHxJsBVuImIs4TPAeQlEgHACCDEb5FD1N04CkiHQCAbRtlih4iHXiKSAcAYNtGmaJfRMR1gucAEhPpAABskyk6wByRDgDANo0yRXc3OvAsIh0AgG0xRQe4R6QDALAto0zRJx8TPAPQAZEOAMA2jDRFd2Ac8GwiHQCAbRhpim6rO/BsIh0AgE0baYruwDhgISIdAIBNGylafYsOLESkAwCwSUcR8WqgN26KDixEpAMAsEkjfYv+yYFxwKJEOgAAm/LWFB3gx0Q6AACbMtIU/SoizhM8B9AZkQ4AwCZMgb430Jt2YBywFJEOAMC67UbEu4He8o2t7sCyRDoAAOs2TZV3BnrLAh1YmkgHAGCdpivX3gz0hu9sdQdeQqQDALBOIx0WNzmLiNsEzwF0SqQDALAuo125FgP+oQSwYiIdAIB12B1w2/eniLhO8BxAx0Q6AADrMNphcWGKDqyCSAcAYNVGOyxucmGKDqyCSAcAYNVGPN3cFB1YCZEOAMAqTbF6MNgbnabo5wmeAyhApAMAsCr7EfF+wLdpig6sjEgHAGBVTgd8k6bowEqJdAAAVuHdgHeihyk6sGoiHQCAl9ofNFZN0YGVE+kAALzU6YB3oocpOrAOIh0AgJcYdZu7KTqwFiIdAIBljbrNPUzRgXUR6QAALOts0G3un03RgXUR6QAALGOaJB8M+ubeJXgGoKifLSwA8IjLQV7MKL/nKh1GxPs6v85CPkXEdUfPC3RGpAMAjzEt5CG7bZv7qHyLDqyV7e4AACziY0TsDfrGPpiiA+sm0gEAeK63EfFm0Ld11/6AAmCtRDoAAM9xOHikTr/7bYLnAIoT6QAAPGX6Dv100OvWJje+RQc2RaQDAPCUjwNftxYOUQQ2SaQDAPAjI3+HPrkY/DR7YMNEOgAAjxn9O/QwRQc2TaQDAPCQ2X3oo36HPvkUEZcJngMYiEgHAOAhpwPfhx7tyjVTdGDjRDoAAPdNJ5m/HvytnLhyDdgGkQ4AwLzjiHg/+Bu58i0+sC0iHQCAmcO2zX10trkDWyPSAQAIB8V9NR0Wd57kWYABiXQAAKKF6cgHxYXD4oAMRDoAANMW94Ph34LD4oAERDoAwNimyfGb0V9CRFw4LA7IQKQDAIzrbUT8Zv3/ZJs7kIJIBwAY03SS+x/W/k8fIuIywXMAiHQAgAEdOsH8q5v2LTpACiIdAGAsrlr71ttMDwMg0gEAxrHrqrVv/G5HAZCNSAcAGMMs0F219l+2uQMpiXQAgDF8FJh+vToAAA7SSURBVOjfeOtOdCAjkQ4AUN+pu9C/YZs7kJZIBwCoTaB/yzZ3IDWRDgBQl0D/nm3uQGoiHQCgpncC/Tu2uQPpiXQAgHqmafFv1vUbV7a5Az0Q6QAAtUyB/oc1/Y5t7kAXRDoAQB0C/WEfIuIy44MB3CfSAQBqEOgPu7DNHeiJSAcA6J9Af9hdezcA3fjZUgEAdM01a4+bAv0668MBPMQkHQCgXwL9cdN1a2dZHw7gMSIdAKBPAv1xrlsDuiXSAQD6I9Afd+e6NaBnvkkHAOjHbtvC/cqaPeqd69aAnol0AIA+TIF+HhEH1utRn9ouA4Bu2e4OAJDfoUB/0pXr1oAKTNIBAHKbBfqOdXrU9B36cdJnA1iISToAQF7HAv1Z3IcOlCHSAQBymsLzXwL9SR/chw5UYrs7AEA+rlh7ns/uQweqMUkHAMhjdsWaQH+ag+KAkkzSAQBy2G+B7gT3p921QL/N/qAAizJJBwDYvqOIuBToz/a2vS+AckQ6AMB2TcH5bwfEPduvDooDKrPdHQBgexwQt5hPEfGxpwcGWJRIBwDYPN+fL85BccAQbHcHANgs358v7qa9N4DyRDoAwOac+P58YdNJ7sdOcgdGYbs7vMx1RFx4hwA8YXb/+SsvamHHTnIHRiLS4WVO2w8APOaoBbrp+eJ+iYjz3h4a4CVsdwcAWB/b25f3uz8IB0Zkkg4AsHr7LTBtb1/OdNXaux4fHOClTNIBAFZr9g21QF/OhavWgJGJdACA1dht0/N/2d6+tKv2hxwAw7LdHQDg5Y5aoO95l0u7au/RVWvA0EzSAQBeZnY4nEBfnrvQARqTdACA5Ry26fmB9/cid22Cft3x7wCwMibpAACLm6bn/xHoLzYL9MvOfw+AlTFJBwB4PtPz1RHoAA8wSQcAeNp0cvtH0/OVeifQAb5nkg4A8GNObl+9X9o7BeAekQ4A8LDZveevvZ+VEugAP2C7OwDA996108YF+moJdIAnmKQDAPzlqH177rvz1RPoAM8g0gEA/joY7o13sRYCHeCZbHcHAEZ30ra2C/T1EOgACzBJBwBG5dT29RPoAAsySQcARnMYEecR8W+BvlYCHWAJIh0AGMV+i8b/RMQrq75WAh1gSba7AwDV7bYr1aafHau9VncR8TYizgr/jgBrJdIBgKrE+Wbdte/8L0f6pQFWTaQDABW9bVeqifPNEOgAK+KbdACgkrftOrU/BPrGCHSAFRLpAEAF83HuxPbNuWqn5Qt0gBWx3R0A6NkU5yfCfCuu2gT9dsDfHWBtRDoA0JvdFufvxPnWfG5rINABVkykAwC9cFp7Dp9aoAOwBiIdAMhuv21pPxbnW/ehrQUAayLSAYCsjtrE9o0VSuGXiDgd/SUArJtIBwCymX1vfmBlUrhruxjOR38RAJsg0gGADPbn4tyW9jxuWqC7Yg1gQ0Q6ALBNtrTn5Yo1gC0Q6QDAprlCLT8nuANsiUgHADbluP2Ymuf2a0R8HP0lAGyLSAcA1mn2rflbU/P07to6nY3+IgC2SaQDAKu22ybmTmjvx1ULdAfEAWyZSAcAVuW4hd5rb7Qrn9u6OSAOIAGRDgC8xPHcj6vT+vMhIk5GfwkAmYh0AGBRwrx/vj8HSEqkAwBP2W33ZQvzGq7aOl6P/iIAMhLpAMBD9ufC3Dfmdbj/HCA5kQ4AzBy2gDtyKns5d+20/dPRXwRAdiIdAMY1Py0/so29LNerAXREpAPAOGbfls/CfM/al/d7O73d9WoAnRDpAFDXfJTbwj4Wp7cDdEqkA0Ads+3rh6J8aBct0J3eDtAhkQ4A/Tqai/JD29eJiA9tezsAnRLpANCH+Rg/NCXnnpt2zoDD4QA6J9IBIJf9e9vW9wU5T3A4HEAhIh0AtmM+xndbkL+yFizgrk3Pz700gDpEOgCsz/69H5NxVuVzOxzO9BygGJEOAMs7av/OwzYNn49yh7ixDq5WAyhOpAPAX2aBPXP0wD8X4GyL6TnAAEQ6AMvavxex23Y/sO+bffc9b9fWczowndz+zvQcYAw/ffnyxVIDrJb/YQVWxcntAIMxSQcAyOembW13cjvAYP5mwQEAUvnQPt0Q6AADMkkHAMjhok3Pr60HwLhEOgDAdrlWDYCvbHcHANie39vWdoEOwJ9M0gEANu+iXat26d0DME+kAwBsjjvPAfghkQ4AsH7Td+cf2487zwF4lEgHAFivTxFx4tR2AJ5DpAMArIfvzgFYmEgHAFitm3al2rn3CsCiXMEGALAaU5z/0q5UE+gALMUkHQDgZRwKB8DKiHQAgOWIcwBWTqQDACzugzgHYB1EOgDA87lODYC1EukAAE8T5wBshEgHAHjY7JvzU3EOwKaIdACAbzkQDoCtEekAAP8lzgHYOpEOAIzupn1vfjr6iwBg+0Q6ADCqixbm4hyANEQ6ADCaTy3Mz608ANmIdABgBE5qB6ALIh0AqOyqxfmZw+AA6IFIBwAqsqUdgC6JdACgipsW5q5QA6BbIh0A6N3nFudnVhKA3ol0AKBHN3MHwZmaA1CGSAcAenHXpuVTnF9aNQAqEukAQHafW5yfWikAqhPpAEBGVy3KbWcHYCgiHQDI4mYuzK+tCgAjEukAwDbdzG1l9505AMMT6QDApglzAHiESAcANmH2jfm5MAeAx4l0AGBdPrcoP/ONOQA8j0gHAFblZi7Kz53KDgCLE+kAwEtczIW5bewA8EIiHQBYxM3cpNy0HABWTKQDAD9yMxfk574tB4D1EukAwLz5KL+0hR0ANkukA8DYrlqIm5QDQAIiHQDGcTcX5Je+KQeAfEQ6ANR1Mbdl3dZ1AOiASAeAGgQ5ABQg0gGgL1ftu/H5GPcdOQAUIdIBIKf7MX5tOg4A9Yl0ANieq3Zw2+wAt1mMm4wDwKBEOgCsz0X7T76ci/D5fwQA+IZIB4DF3M1tO5+fes/C+9a2dABgWSIdgNHcPLCd/KGwPp/757agAwAbIdIBVu/v3ulWCWoAoFs/ffnyxeoBAABAAn+zCAAAAJCDSAcAAIAkRDoAAAAkIdIBAAAgCZEOAAAASYh0AAAASEKkAwAAQBIiHQAAAJIQ6QAAAJCESAcAAIAkRDoAAAAkIdIBAAAgCZEOAAAASYh0AAAASEKkAwAAQBIiHQAAAJIQ6QAAAJCESAcAAIAkRDoAAAAkIdIBAAAgCZEOAAAASYh0AAAASEKkAwAAQBIiHQAAAJIQ6QAAAJCESAcAAIAkRDoAAAAkIdIBAAAgCZEOAAAASYh0AAAASEKkAwAAQBIiHQAAAJIQ6QAAAJCESAcAAIAkRDoAAAAkIdIBAAAgCZEOAAAASYh0AAAASEKkAwAAQBIiHQAAAJIQ6QAAAJCESAcAAIAkRDoAAAAkIdIBAAAgCZEOAAAASYh0AAAASEKkAwAAQBIiHQAAAJIQ6QAAAJCESAcAAIAkRDoAAAAkIdIBAAAgCZEOAAAASYh0AAAASEKkAwAAQBIiHQAAAJIQ6QAAAJCESAcAAIAkRDoAAAAkIdIBAAAgCZEOAAAASYh0AAAASEKkAwAAQBIiHQAAAJIQ6QAAAJCESAcAAIAkRDoAAAAkIdIBAAAgCZEOAAAASYh0AAAASEKkAwAAQBIiHQAAAJIQ6QAAAJCESAcAAIAkRDoAAAAkIdIBAAAgCZEOAAAASYh0AAAASEKkAwAAQBIiHQAAAJIQ6QAAAJCESAcAAIAkRDoAAAAkIdIBAAAgCZEOAAAASYh0AAAASEKkAwAAQBIiHQAAAJIQ6QAAAJCESAcAAIAkRDoAAAAkIdIBAAAgCZEOAAAASYh0AAAASEKkAwAAQBIiHQAAAJIQ6QAAAJCESAcAAIAkRDoAAAAkIdIBAAAgCZEOAAAASYh0AAAASEKkAwAAQBIiHQAAAJIQ6QAAAJCESAcAAIAkRDoAAMD/b7+OCQAAABAG2T+1NXZACyBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAAKBg2wGMDPl5BT36QAAAAABJRU5ErkJggg==" alt="DH" style="width:22px;height:22px;object-fit:contain;"></div>
+      DH Lab
+    </a>
+    <nav class="site-nav">
+      <a href="../index.html" class="nav-link">Home</a>
+      <a href="tectonics.html" class="nav-link active">Tectonics</a>
+      <a href="development.html" class="nav-link">Development</a>
+      <a href="climate.html" class="nav-link">Climate</a>
+      <a href="../econ/index.html" class="nav-link">Econ Lab</a>
+      <a href="../history/timeline.html" class="nav-link">History</a>
+    </nav>
+    <div class="header-right">
+      <button class="theme-toggle" id="theme-toggle-btn" onclick="toggleTheme()"><span class="toggle-icon">🌙</span><span class="toggle-label" id="toggle-label">Dark</span></button>
+      <span class="badge">OCR H481</span>
+    </div>
+  </div>
+</header>
+
+<div class="page">
+  <aside class="sidebar">
+    <div class="card">
+      <div class="card-title">Tectonic region</div>
+      <div class="region-grid" id="region-grid"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Filter by hazard type</div>
+      <div class="filter-row">
+        <button class="filter-btn active" data-type="all" onclick="filterType(this,'all')">All</button>
+        <button class="filter-btn" data-type="earthquake" onclick="filterType(this,'earthquake')">🔴 Earthquakes</button>
+        <button class="filter-btn" data-type="volcano" onclick="filterType(this,'volcano')">🟠 Volcanoes</button>
+        <button class="filter-btn" data-type="tsunami" onclick="filterType(this,'tsunami')">🔵 Tsunamis</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Plate boundary types</div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;gap:8px;align-items:flex-start">
+          <span style="font-size:14px;flex-shrink:0">⬅️➡️</span>
+          <div><div style="font-size:12px;font-weight:600">Constructive</div><div style="font-size:11px;color:var(--muted)">Plates move apart. Magma rises to fill gap. Mid-ocean ridges, rift valleys, shield volcanoes.</div></div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:flex-start">
+          <span style="font-size:14px;flex-shrink:0">➡️⬅️</span>
+          <div><div style="font-size:12px;font-weight:600">Destructive</div><div style="font-size:11px;color:var(--muted)">Denser oceanic plate subducts. Deep ocean trenches, explosive volcanoes, strong earthquakes.</div></div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:flex-start">
+          <span style="font-size:14px;flex-shrink:0">⬆️⬇️</span>
+          <div><div style="font-size:12px;font-weight:600">Collision</div><div style="font-size:11px;color:var(--muted)">Two continental plates collide. Mountain ranges, fold mountains. No volcanoes but severe earthquakes.</div></div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:flex-start">
+          <span style="font-size:14px;flex-shrink:0">↔️</span>
+          <div><div style="font-size:12px;font-weight:600">Conservative</div><div style="font-size:11px;color:var(--muted)">Plates slide past each other. No volcanoes. Frequent, shallow, devastating earthquakes.</div></div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main" id="main-content">
+    <div class="hero-card">
+      <div class="hero-title" id="region-title">Select a tectonic region</div>
+      <div class="hero-sub" id="region-desc">Choose a region from the sidebar to explore its tectonic setting, major hazard events, and how it connects to the OCR H481 Geography specification.</div>
+    </div>
+  </main>
+</div>
+
+<script>
+const REGIONS = {
+  pacific: {
+    name: "Pacific Ring of Fire",
+    icon: "🌋",
+    sub: "Most active zone",
+    desc: "The Ring of Fire encircles the Pacific Ocean and accounts for 90% of the world's earthquakes and 75% of active volcanoes. Destructive plate boundaries where oceanic plates subduct beneath continental plates cause explosive Composite/Strato volcanoes and megathrust earthquakes.",
+    boundary: "Mainly destructive (subduction)",
+    stats: {earthquakes:"90% of world total", volcanoes:"452 active", lastMajor:"2011 Tōhoku M9.1", length:"40,000 km"},
+    events: [
+      {name:"2011 Tōhoku Earthquake & Tsunami",year:2011,type:"tsunami",desc:"Magnitude 9.1 megathrust earthquake off the coast of Japan triggered a tsunami up to 40m high. 15,897 killed, Fukushima nuclear disaster. Deadliest earthquake in Japan since 1923.",tags:["M9.1","Megathrust","Nuclear"],color:"#3B82F6"},
+      {name:"2004 Indian Ocean Tsunami",year:2004,type:"tsunami",desc:"Magnitude 9.1 earthquake off Sumatra's coast generated tsunamis reaching 30m. 230,000 killed across 14 countries — the deadliest tsunami in recorded history.",tags:["M9.1","230,000 dead","Sumatra"],color:"#3B82F6"},
+      {name:"1980 Mount St Helens Eruption",year:1980,type:"volcano",desc:"Lateral eruption in Washington State, USA. Pyroclastic flows, lahars, and the largest landslide in recorded history. 57 killed. Helped scientists understand Plinian eruptions.",tags:["Composite volcano","Pyroclastic","USA"],color:"#F5A623"},
+      {name:"1960 Valdivia Earthquake",year:1960,type:"earthquake",desc:"The most powerful earthquake ever recorded at M9.5, in southern Chile. Triggered tsunamis that reached Hawaii and Japan. 5,700 killed across the Pacific.",tags:["M9.5","Most powerful ever","Chile"],color:"#EF4444"},
+      {name:"1991 Mount Pinatubo",year:1991,type:"volcano",desc:"Second largest 20th century eruption in the Philippines. Ejected so much ash it cooled global temperatures by 0.5°C for two years. 800 killed, 1 million displaced.",tags:["VEI-6","Global cooling","Philippines"],color:"#F5A623"}
+    ],
+    syllabus: "Paper 3: Hazardous Earth. The Ring of Fire is the key case study for destructive plate boundaries. Students should understand subduction, Benioff zones, and why volcanic eruptions here are more explosive than at constructive boundaries."
+  },
+  mediterranean: {
+    name: "Mediterranean-Alpine Belt",
+    icon: "⛰️",
+    sub: "Collision & subduction",
+    desc: "The Mediterranean region sits where the African plate converges with the Eurasian plate. The Alps formed from continental collision; the Apennines and Aegean regions experience subduction. Seismicity is high, with Turkey particularly vulnerable at a conservative boundary.",
+    boundary: "Collision & destructive",
+    stats: {earthquakes:"15% of world total", volcanoes:"Vesuvius, Etna, Santorini", lastMajor:"2023 Turkey-Syria M7.8", length:"15,000 km"},
+    events: [
+      {name:"2023 Turkey-Syria Earthquake",year:2023,type:"earthquake",desc:"Twin M7.8 and M7.5 earthquakes on the East Anatolian Fault killed over 50,000 people. One of the deadliest earthquakes of the 21st century. Poor building standards massively amplified casualties.",tags:["M7.8","50,000+ dead","Conservative"],color:"#EF4444"},
+      {name:"2009 L'Aquila Earthquake",year:2009,type:"earthquake",desc:"M6.3 earthquake killed 309 people in central Italy. Subsequently famous for the controversial prosecution of scientists for failing to adequately warn of the risk.",tags:["M6.3","Italy","Controversy"],color:"#EF4444"},
+      {name:"Mount Etna (ongoing)",year:2024,type:"volcano",desc:"Europe's tallest and most active volcano on Sicily. Shield-like eruptions are effusive rather than explosive — lava flows are predictable and rarely kill, but cause economic disruption.",tags:["Shield","Effusive","Sicily"],color:"#F5A623"},
+      {name:"1999 İzmit Earthquake",year:1999,type:"earthquake",desc:"M7.6 on the North Anatolian Fault — a conservative plate boundary — killed 17,000. Poor urban construction on soft alluvial soil amplified destruction dramatically.",tags:["M7.6","Conservative fault","Turkey"],color:"#EF4444"},
+      {name:"1906 Vesuvius Eruption",year:1906,type:"volcano",desc:"The last significant eruption of Vesuvius deposited thick ash across the Bay of Naples. The volcano poses an extreme risk to the 3 million people living in the 'red zone.'",tags:["Composite","Naples","3m at risk"],color:"#F5A623"}
+    ],
+    syllabus: "Paper 3: Hazardous Earth. Turkey is a key case study for conservative plate boundaries and earthquake risk. Compare with the Ring of Fire — why are Mediterranean volcanoes often less explosive?"
+  },
+  eastafrica: {
+    name: "East African Rift System",
+    icon: "🌍",
+    sub: "Constructive boundary",
+    desc: "The East African Rift Valley is one of the world's great geological features — a constructive plate boundary where the African plate is being pulled apart. Shield volcanoes, rift valley lakes, and moderate earthquakes characterise this zone. Eventually, a new ocean will form here in millions of years.",
+    boundary: "Constructive (rift valley)",
+    stats: {earthquakes:"Moderate seismicity", volcanoes:"Nyiragongo, Kilimanjaro", lastMajor:"2002 Nyiragongo", length:"6,000 km"},
+    events: [
+      {name:"2002 Nyiragongo Eruption",year:2002,type:"volcano",desc:"Highly fluid lava (world's fastest lava flows) destroyed 40% of Goma, DRC in minutes. 147 killed, 120,000 displaced. Nyiragongo contains the world's largest lava lake.",tags:["Lava lake","Shield","DRC"],color:"#F5A623"},
+      {name:"2021 Nyiragongo Eruption",year:2021,type:"volcano",desc:"Eruption sent lava flows towards Goma, forcing mass evacuation of 400,000 people. Demonstrated ongoing risk to one of Africa's most densely populated cities near an active volcano.",tags:["Ongoing risk","Evacuation","DRC"],color:"#F5A623"},
+      {name:"1994 Rwanda Earthquake sequence",year:1994,type:"earthquake",desc:"Moderate earthquakes in the rift zone caused building damage and casualties, compounding the humanitarian crisis of the genocide. Shows how tectonic events intersect with human vulnerability.",tags:["Rift valley","Moderate","Rwanda"],color:"#EF4444"},
+      {name:"Kilimanjaro volcanic history",year:2023,type:"volcano",desc:"Though dormant, Kilimanjaro (5,895m) is a stratovolcano in the rift system. Its shrinking ice cap — losing 80% since 1912 — is a key case study in climate change impact on physical geography.",tags:["Dormant","Ice cap","Climate"],color:"#F5A623"}
+    ],
+    syllabus: "Paper 1: Landscape Systems & Paper 3: Hazardous Earth. The East African Rift illustrates constructive boundaries. Contrast volcanic character here (effusive, shield) with destructive boundaries (explosive, composite). Also links to climate change module."
+  },
+  iceland: {
+    name: "Iceland & Mid-Atlantic Ridge",
+    icon: "🏔️",
+    sub: "Constructive — hot spot",
+    desc: "Iceland sits on the Mid-Atlantic Ridge, a constructive plate boundary, AND above a mantle hot spot. This unique combination makes it one of the most volcanically active places on Earth. Eruptions are frequent but usually effusive — lava flows rather than explosive events. Iceland uses this geothermal energy extensively.",
+    boundary: "Constructive + hot spot",
+    stats: {earthquakes:"Frequent, moderate", volcanoes:"130+ volcanic mountains", lastMajor:"2024 Reykjanes eruptions", length:"Mid-Atlantic Ridge 16,000km"},
+    events: [
+      {name:"2024 Reykjanes Peninsula Eruptions",year:2024,type:"volcano",desc:"A series of fissure eruptions near Grindavík threaten the town and Blue Lagoon geothermal resort. Demonstrates how even relatively gentle eruptions cause severe economic disruption.",tags:["Fissure","2024","Iceland"],color:"#F5A623"},
+      {name:"2010 Eyjafjallajökull",year:2010,type:"volcano",desc:"Sub-glacial eruption produced an enormous ash cloud that grounded flights across Europe for 6 days, costing £1.3bn. Showed how distant societies are vulnerable to tectonic events elsewhere.",tags:["Ash cloud","Aviation","£1.3bn cost"],color:"#F5A623"},
+      {name:"1783 Laki Eruption",year:1783,type:"volcano",desc:"One of history's most impactful eruptions. Released poisonous gases that killed 25% of Iceland's population, then cooled global temperatures, contributing to famines across Europe.",tags:["Historic","Global impact","Famine"],color:"#F5A623"},
+      {name:"2011 Grímsvötn Eruption",year:2011,type:"volcano",desc:"Iceland's most active volcano erupted with a VEI-4 blast. Ash disrupted flights briefly, but Iceland's monitoring systems allowed accurate forecasting — a model for hazard management.",tags:["VEI-4","Monitoring","Iceland"],color:"#F5A623"}
+    ],
+    syllabus: "Paper 3: Hazardous Earth & Paper 1. Iceland is the go-to case study for constructive boundaries. The 2010 eruption links to 'impacts of hazards on globalised economies.' Geothermal energy links to sustainability themes."
+  },
+  japan: {
+    name: "Japan & Northeast Asia",
+    icon: "🗾",
+    sub: "4 plates converge",
+    desc: "Japan sits at the convergence of four tectonic plates — Pacific, North American, Eurasian, and Philippine — making it one of the world's most seismically active countries. Despite experiencing around 1,500 earthquakes per year, Japan's sophisticated preparedness systems have saved countless lives.",
+    boundary: "Multiple destructive boundaries",
+    stats: {earthquakes:"~1,500/year", volcanoes:"111 active including Fuji", lastMajor:"2024 Noto M7.5", length:"Japanese archipelago 3,000km"},
+    events: [
+      {name:"2011 Tōhoku Earthquake & Tsunami",year:2011,type:"tsunami",desc:"Japan's most powerful recorded earthquake (M9.1) and the resulting tsunami killed 15,897 people, destroyed 130,000 buildings, and caused the Fukushima nuclear disaster — the worst since Chernobyl.",tags:["M9.1","Nuclear disaster","£200bn damage"],color:"#3B82F6"},
+      {name:"1995 Great Hanshin (Kobe) Earthquake",year:1995,type:"earthquake",desc:"M6.9 earthquake devastated Kobe, a wealthy Japanese city. 6,434 killed, 300,000 homeless. Despite Japan's preparedness, the earthquake revealed vulnerabilities in older buildings and elevated highways.",tags:["M6.9","Kobe","£100bn"],color:"#EF4444"},
+      {name:"2024 Noto Peninsula Earthquake",year:2024,type:"earthquake",desc:"New Year's Day M7.5 earthquake on the Noto Peninsula killed over 240 people. Japan's warning systems gave seconds of warning — not enough for areas so close to the epicentre.",tags:["M7.5","2024","Warning limits"],color:"#EF4444"},
+      {name:"Mount Fuji (dormant)",year:1707,type:"volcano",desc:"Fuji last erupted in 1707. With 30 million people within 50km, a future eruption would be catastrophic. The Japanese government's evacuation plan involves moving 500,000 people.",tags:["Dormant","30m at risk","Stratovolcano"],color:"#F5A623"}
+    ],
+    syllabus: "Paper 3: Hazardous Earth. Japan is the premier case study for hazard management in a MEDC. Compare 2011 Tōhoku (despite preparation, scale overwhelmed systems) with 1995 Kobe (preparedness failures in a wealthy city). Key question: can any society be truly prepared?"
+  },
+  caribbean: {
+    name: "Caribbean & Central America",
+    icon: "🏝️",
+    sub: "Small plate, big hazards",
+    desc: "The Caribbean plate is bounded by the North American plate to the north and east (destructive), and by the South American plate (destructive). The region experiences hurricanes, volcanic eruptions, and earthquakes — often in combination, creating compound hazard events that devastate small island developing states.",
+    boundary: "Destructive on multiple sides",
+    stats: {earthquakes:"High seismicity", volcanoes:"Soufrière Hills, La Soufrière", lastMajor:"2021 La Palma eruption", length:"Caribbean arc 1,500km"},
+    events: [
+      {name:"2010 Haiti Earthquake",year:2010,type:"earthquake",desc:"M7.0 earthquake killed an estimated 100,000–300,000 people — the deadliest 21st century earthquake. Port-au-Prince's poverty, weak buildings, and lack of governance turned a moderate quake into catastrophe.",tags:["M7.0","300,000 dead","LEDC vulnerability"],color:"#EF4444"},
+      {name:"1997 Montserrat (Soufrière Hills)",year:1997,type:"volcano",desc:"Pyroclastic flows destroyed Plymouth, the island's capital. Two-thirds of the population evacuated to the UK. The southern half of the island remains uninhabitable. A defining LEDC volcanic disaster.",tags:["Pyroclastic","Plymouth destroyed","UK evacuation"],color:"#F5A623"},
+      {name:"1902 Mount Pelée, Martinique",year:1902,type:"volcano",desc:"Pyroclastic surges killed 29,000 people — virtually the entire population of St Pierre — in minutes. One of the most lethal eruptions of modern times. Changed how scientists understood volcanic hazards.",tags:["29,000 dead","Pyroclastic surge","Historic"],color:"#F5A623"},
+      {name:"2021 La Palma (Canary Islands)",year:2021,type:"volcano",desc:"85-day eruption destroyed 3,000 buildings and agricultural land across La Palma. 7,000 evacuated. Despite no deaths, economic losses were devastating for this small island economy.",tags:["85 days","Lava flows","Spain"],color:"#F5A623"}
+    ],
+    syllabus: "Paper 3: Hazardous Earth. Haiti 2010 is the essential LEDC earthquake case study — contrast with Japan. Montserrat allows deep study of volcanic hazard management over time. Key theme: how does development level affect vulnerability?"
+  }
+};
+
+let activeRegion = null;
+let activeType = 'all';
+
+function renderRegions() {
+  const grid = document.getElementById('region-grid');
+  grid.innerHTML = Object.entries(REGIONS).map(([key, r]) => `
+    <button class="region-btn ${key===activeRegion?'active':''}" onclick="selectRegion('${key}')">
+      <span class="rb-icon">${r.icon}</span>
+      <span class="rb-name">${r.name.split(' ')[0]} ${r.name.split(' ')[1]||''}</span>
+      <span class="rb-sub">${r.sub}</span>
+    </button>`).join('');
+}
+
+function filterType(btn, type) {
+  activeType = type;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  if (activeRegion) renderMain(activeRegion);
+}
+
+function selectRegion(key) {
+  activeRegion = key;
+  renderRegions();
+  renderMain(key);
+}
+
+function renderMain(key) {
+  const r = REGIONS[key];
+  const events = activeType === 'all' ? r.events : r.events.filter(e => e.type === activeType);
+  
+  const eventsHtml = events.length ? events.map(e => `
+    <div class="event-card" style="--e-color:${e.color}">
+      <div class="event-header">
+        <div class="event-name">${e.name}</div>
+        <div class="event-year">${e.year}</div>
+      </div>
+      <div class="event-desc">${e.desc}</div>
+      <div class="event-tags">${e.tags.map(t=>`<span class="event-tag" style="background:${e.color}22;color:${e.color}">${t}</span>`).join('')}</div>
+    </div>`).join('') : '<div style="padding:1rem;color:var(--muted);font-size:13px;">No events of this type recorded for this region.</div>';
+
+  document.getElementById('main-content').innerHTML = `
+    <div class="hero-card">
+      <div class="hero-title">${r.icon} ${r.name}</div>
+      <div class="hero-sub">${r.desc}</div>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-label">Earthquakes</div><div class="stat-value" style="font-size:1rem;line-height:1.3">${r.stats.earthquakes}</div></div>
+      <div class="stat-card"><div class="stat-label">Volcanoes</div><div class="stat-value" style="font-size:1rem;line-height:1.3">${r.stats.volcanoes}</div></div>
+      <div class="stat-card"><div class="stat-label">Recent major event</div><div class="stat-value" style="font-size:.9rem;line-height:1.3">${r.stats.lastMajor}</div></div>
+      <div class="stat-card"><div class="stat-label">Boundary type</div><div class="stat-value" style="font-size:.85rem;line-height:1.3">${r.boundary}</div></div>
+    </div>
+    <div class="card" style="padding:1.25rem">
+      <div class="card-title">Major hazard events</div>
+      <div class="events-list">${eventsHtml}</div>
+    </div>
+    <div class="syllabus-card">
+      <div class="syl-label">OCR H481 Syllabus Connection</div>
+      <div class="syl-text">${r.syllabus}</div>
+    </div>`;
+}
+
+function initTheme() {
+  const s = localStorage.getItem('dhlab-theme') || 'dark';
+  document.documentElement.setAttribute('data-theme', s);
+  updateToggle(s);
+}
+function toggleTheme() {
+  const c = document.documentElement.getAttribute('data-theme') || 'dark';
+  const n = c==='dark'?'light':'dark';
+  document.documentElement.setAttribute('data-theme', n);
+  localStorage.setItem('dhlab-theme', n);
+  updateToggle(n);
+}
+function updateToggle(t) {
+  const btn = document.getElementById('theme-toggle-btn');
+  const lbl = document.getElementById('toggle-label');
+  const icon = btn?.querySelector('.toggle-icon');
+  if (icon) icon.textContent = t==='dark'?'🌙':'☀️';
+  if (lbl) lbl.textContent = t==='dark'?'Dark':'Light';
+}
+
+initTheme();
+renderRegions();
+selectRegion('pacific');
+</script>
+</body>
+</html>
