@@ -766,6 +766,7 @@ input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:16px; h
 </div><!-- end page-content -->
 
 <script>
+
 // ===== PAPER/SECTION SWITCHING =====
 function switchPaper(btn, paper) {
   document.querySelectorAll('.paper-tab').forEach(b=>b.classList.remove('active'));
@@ -911,7 +912,7 @@ function updateRichter() {
     else insight = `Moderate damage to older buildings. A well-prepared MEDC like Japan would manage this with few casualties. Early warning systems would give critical seconds.`;
   } else if (mag < 7) {
     if (dev===1) insight = `Potentially catastrophic in a poorly-prepared LEDC. This magnitude in Haiti killed 100,000+. Key factors: building quality, emergency response, and governance.`;
-    else insight = `Serious damage possible even in MEDCs. The 1995 Kobe earthquake (M6.9) killed 6,400 despite Japan's preparedness — older buildings were the main weakness.`;
+    else insight = `Serious damage possible even in MEDCs. The 1995 Kobe earthquake (M6.9) killed 6,400 despite Japan\'s preparedness — older buildings were the main weakness.`;
   } else if (mag < 8) {
     insight = `A major earthquake. At M${mag.toFixed(1)}, widespread destruction is likely regardless of development level. The 2011 Tōhoku earthquake (M9.1) showed even the most prepared nations face limits.`;
   } else {
@@ -1014,7 +1015,7 @@ function restartGame() {
 
 // ===== PLACES =====
 const PLACES = [
-  {name:'Manchester',country:'UK',type:'Post-industrial regeneration',desc:'Once the world's largest cotton-spinning city, Manchester experienced severe deindustrialisation after 1970. The 1996 IRA bombing paradoxically accelerated regeneration. Now a service, digital, and cultural hub — but spatial inequality between city centre and peripheral estates persists.',factors:[{icon:'🏭',t:'Deindustrialisation',d:'Cotton mills and heavy industry collapsed 1970s-80s'},{icon:'🏟️',t:'Sport & culture',d:'Manchester United, City, and music scene create global profile'},{icon:'🏗️',t:'Urban Development Corp',d:'Salford Quays redevelopment transformed former docklands'},{icon:'⚠️',t:'Persistent inequality',d:'Moss Side and Ancoats remain deprived despite city-centre growth'}],color:'#3B82F6'},
+  {name:'Manchester',country:'UK',type:'Post-industrial regeneration',desc:'Once the world\'s largest cotton-spinning city, Manchester experienced severe deindustrialisation after 1970. The 1996 IRA bombing paradoxically accelerated regeneration. Now a service, digital, and cultural hub — but spatial inequality between city centre and peripheral estates persists.',factors:[{icon:'🏭',t:'Deindustrialisation',d:'Cotton mills and heavy industry collapsed 1970s-80s'},{icon:'🏟️',t:'Sport & culture',d:'Manchester United, City, and music scene create global profile'},{icon:'🏗️',t:'Urban Development Corp',d:'Salford Quays redevelopment transformed former docklands'},{icon:'⚠️',t:'Persistent inequality',d:'Moss Side and Ancoats remain deprived despite city-centre growth'}],color:'#3B82F6'},
   {name:'Detroit',country:'USA',type:'Urban decline & shrinkage',desc:'Once the world\'s automotive capital, Detroit filed for the largest municipal bankruptcy in US history in 2013. Population fell from 1.8 million (1950) to under 700,000. Vast areas of abandoned housing create a "shrinking city" landscape. A cautionary tale about mono-industrial dependence.',factors:[{icon:'🚗',t:'Automotive collapse',d:'"Big Three" manufacturers lost market share to Japan/Germany'},{icon:'🏃',t:'White flight & suburbanisation',d:'Middle class left for suburbs post-1967 riots'},{icon:'💸',t:'Fiscal crisis',d:'Population loss destroyed tax base — city couldn\'t fund services'},{icon:'🌱',t:'Urban farming emerges',d:'Vacant lots converted to community gardens and farms'}],color:'#EF4444'},
   {name:'Bilbao',country:'Spain',type:'Culture-led regeneration',desc:'The "Bilbao Effect": Frank Gehry\'s Guggenheim Museum (1997) transformed a declining Basque industrial city into a global cultural destination. Tourism revenue replaced lost industrial income. The model has been replicated worldwide — but critics question whether culture-led regeneration benefits existing residents.',factors:[{icon:'🎨',t:'Guggenheim Museum',d:'1.3 million visitors/year, generating €500m annual revenue'},{icon:'🚇',t:'Infrastructure investment',d:'New metro, airport, and waterfront park alongside museum'},{icon:'💼',t:'Service sector growth',d:'Tourism and finance replaced steel and shipbuilding'},{icon:'❓',t:'Contested success',d:'Has regeneration reached deprived barrios? Gentrification concerns'}],color:'#F59E0B'},
   {name:'London Docklands',country:'UK',type:'Enterprise Zone regeneration',desc:'London\'s Docklands were the world\'s busiest port until containerisation made them obsolete in the 1960s-70s. The London Docklands Development Corporation (1981) used Enterprise Zone status to attract Canary Wharf financial district. Now home to HSBC, Barclays, and Credit Suisse — but original communities argue they were displaced.',factors:[{icon:'🚢',t:'Port closure',d:'Containerisation at Tilbury made inner docks obsolete'},{icon:'🏦',t:'Canary Wharf',d:'Major global financial centre built on former docks'},{icon:'🏘️',t:'Gentrification',d:'Original working-class communities priced out of regenerated areas'},{icon:'🚂',t:'DLR & Crossrail',d:'Transport investment crucial to attracting investment'}],color:'var(--green-mid)'}
@@ -1106,6 +1107,6 @@ renderHazardGame();
 renderPlaces();
 renderMigration();
 renderDiseases();
-</script>
+</script></script>
 </body>
 </html>
