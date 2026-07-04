@@ -1,0 +1,1102 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Geography Explorer — DH Lab</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+
+/* ===== DH LAB SHARED DESIGN SYSTEM ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --cream: #FAF7F2;
+  --cream-dark: #F0EBE1;
+  --cream-mid: #E8E0D4;
+  --green: #1B4332;
+  --green-mid: #2D6A4F;
+  --green-light: #52B788;
+  --green-pale: #D8EFE4;
+  --gold: #C9A84C;
+  --gold-light: #E6C96A;
+  --gold-pale: #FDF3D8;
+  --ink: #1A1F2B;
+  --ink-mid: rgba(26,31,43,0.65);
+  --ink-light: rgba(26,31,43,0.35);
+  --border: rgba(26,31,43,0.10);
+  --border-green: rgba(27,67,50,0.20);
+  --white: #FFFFFF;
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-serif: 'Playfair Display', serif;
+  --font-body: 'Inter', sans-serif;
+  --shadow-sm: 0 1px 3px rgba(26,31,43,0.08);
+  --shadow-md: 0 4px 12px rgba(26,31,43,0.10);
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+}
+
+body {
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--font-body);
+  min-height: 100vh;
+  line-height: 1.5;
+}
+
+/* ===== HEADER ===== */
+.dh-header {
+  background: var(--green);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 8px rgba(27,67,50,0.25);
+}
+.dh-header-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  height: 64px;
+}
+.dh-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+.dh-logo-chip {
+  width: 36px; height: 36px;
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+}
+.dh-logo-chip img { width: 22px; height: 22px; object-fit: contain; }
+.dh-logo-text {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: #FFFFFF;
+  letter-spacing: -0.01em;
+}
+.dh-logo-sub {
+  font-size: 10px;
+  color: rgba(255,255,255,0.6);
+  font-weight: 400;
+  display: block;
+  line-height: 1;
+  margin-top: 1px;
+  letter-spacing: 0.02em;
+}
+.dh-nav {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex: 1;
+}
+.dh-nav-link {
+  font-size: 13px;
+  font-weight: 500;
+  padding: 6px 16px;
+  border-radius: 6px;
+  text-decoration: none;
+  color: rgba(255,255,255,0.75);
+  transition: all 0.18s;
+  white-space: nowrap;
+}
+.dh-nav-link:hover { color: #FFFFFF; background: rgba(255,255,255,0.10); }
+.dh-nav-link.active { color: #FFFFFF; background: rgba(255,255,255,0.15); font-weight: 600; }
+.dh-nav-link.active-gold { color: var(--gold-light); background: rgba(201,168,76,0.18); font-weight: 600; }
+.dh-header-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.dh-badge {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--gold-light);
+  background: rgba(201,168,76,0.18);
+  border: 1px solid rgba(201,168,76,0.35);
+  border-radius: 20px;
+  padding: 4px 12px;
+  white-space: nowrap;
+}
+
+/* ===== CARDS ===== */
+.card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+}
+.card-title {
+  font-family: var(--font-display);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-mid);
+  margin-bottom: 1rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid var(--border);
+}
+
+/* ===== SECTION LABELS ===== */
+.section-label {
+  font-family: var(--font-display);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-light);
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+/* ===== BUTTONS ===== */
+.btn-primary {
+  background: var(--green);
+  color: #FFFFFF;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 8px 18px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.18s;
+}
+.btn-primary:hover { background: var(--green-mid); }
+.btn-outline {
+  background: transparent;
+  color: var(--green);
+  border: 1px solid var(--border-green);
+  border-radius: var(--radius-sm);
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s;
+}
+.btn-outline:hover { background: var(--green-pale); }
+.btn-outline.active { background: var(--green-pale); border-color: var(--green-mid); color: var(--green); }
+
+/* ===== TABS ===== */
+.tab-bar {
+  display: flex;
+  gap: 4px;
+  background: var(--cream-dark);
+  padding: 4px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  width: fit-content;
+}
+.tab-btn {
+  font-size: 13px;
+  font-weight: 500;
+  padding: 7px 18px;
+  border-radius: 7px;
+  border: none;
+  background: transparent;
+  color: var(--ink-mid);
+  cursor: pointer;
+  transition: all 0.18s;
+}
+.tab-btn.active { background: var(--white); color: var(--ink); box-shadow: var(--shadow-sm); font-weight: 600; }
+.tab-btn:hover:not(.active) { color: var(--ink); }
+
+/* ===== GOLD ACCENT ELEMENTS ===== */
+.gold-chip {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--green);
+  background: var(--gold-pale);
+  border: 1px solid rgba(201,168,76,0.4);
+  border-radius: 20px;
+  padding: 3px 10px;
+}
+.green-chip {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--green);
+  background: var(--green-pale);
+  border: 1px solid var(--border-green);
+  border-radius: 20px;
+  padding: 3px 10px;
+}
+
+/* ===== INSIGHT/SYLLABUS BOXES ===== */
+.syllabus-box {
+  background: var(--gold-pale);
+  border: 1px solid rgba(201,168,76,0.35);
+  border-left: 3px solid var(--gold);
+  border-radius: var(--radius-md);
+  padding: 1rem 1.25rem;
+}
+.syllabus-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 5px;
+}
+.syllabus-text { font-size: 13px; color: var(--ink-mid); line-height: 1.65; }
+
+.insight-box {
+  background: var(--green-pale);
+  border: 1px solid var(--border-green);
+  border-left: 3px solid var(--green-mid);
+  border-radius: var(--radius-md);
+  padding: 1rem 1.25rem;
+}
+.insight-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--green-mid);
+  margin-bottom: 5px;
+}
+.insight-text { font-size: 13px; color: var(--ink-mid); line-height: 1.65; }
+
+@media (max-width: 800px) {
+  .dh-header-inner { padding: 0 1rem; gap: 1rem; }
+  .dh-nav { gap: 1px; }
+  .dh-nav-link { padding: 5px 10px; font-size: 12px; }
+  .dh-logo-sub { display: none; }
+}
+
+
+/* PAGE HERO */
+.page-hero { background:var(--green); padding:2rem 2rem 0; }
+.page-hero-inner { max-width:1400px; margin:0 auto; display:flex; align-items:flex-end; gap:2rem; flex-wrap:wrap; }
+.page-hero-text { padding-bottom:1.5rem; }
+.hero-eyebrow { font-size:10px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:var(--gold-light); margin-bottom:6px; }
+.hero-title { font-family:var(--font-serif); font-size:clamp(1.6rem,3vw,2.2rem); font-weight:700; color:#fff; margin-bottom:4px; }
+.hero-sub { font-size:13px; color:rgba(255,255,255,0.7); }
+
+/* PAPER TABS (top level) */
+.paper-tabs { margin-left:auto; display:flex; gap:2px; padding-bottom:0; }
+.paper-tab {
+  font-size:13px; font-weight:600; padding:10px 22px;
+  border-radius:10px 10px 0 0; border:none;
+  background:rgba(255,255,255,0.12); color:rgba(255,255,255,0.7);
+  cursor:pointer; transition:all .18s;
+}
+.paper-tab:hover { background:rgba(255,255,255,0.2); color:#fff; }
+.paper-tab.active { background:var(--cream); color:var(--green); }
+
+/* SECTION TABS (within each paper) */
+.section-tabs { display:flex; gap:4px; background:var(--cream-dark); padding:4px; border-radius:10px; border:1px solid var(--border); width:fit-content; margin-bottom:1.5rem; }
+.section-tab { font-size:12px; font-weight:600; padding:7px 16px; border-radius:7px; border:none; background:transparent; color:var(--ink-mid); cursor:pointer; transition:all .18s; }
+.section-tab.active { background:var(--white); color:var(--ink); box-shadow:var(--shadow-sm); }
+.section-tab:hover:not(.active) { color:var(--ink); }
+
+.page-content { max-width:1400px; margin:0 auto; padding:2rem; }
+.paper-panel { display:none; } .paper-panel.active { display:block; }
+.section-panel { display:none; } .section-panel.active { display:block; }
+
+/* LAYOUTS */
+.two-col { display:grid; grid-template-columns:280px 1fr; gap:1.5rem; }
+.sidebar { display:flex; flex-direction:column; gap:1rem; }
+.main-content { display:flex; flex-direction:column; gap:1.25rem; }
+.hero-card { background:var(--white); border:1px solid var(--border); border-radius:var(--radius-lg); padding:1.5rem; border-left:4px solid var(--green-mid); box-shadow:var(--shadow-sm); }
+.hero-card-title { font-family:var(--font-display); font-size:1.2rem; font-weight:700; margin-bottom:.4rem; color:var(--ink); }
+.hero-card-desc { font-size:13px; color:var(--ink-mid); line-height:1.7; }
+
+/* SLIDERS */
+.slider-group { display:flex; flex-direction:column; gap:.85rem; }
+.slider-row { }
+.slider-top { display:flex; justify-content:space-between; margin-bottom:5px; }
+.slider-name { font-size:12px; color:var(--ink-mid); font-weight:500; }
+.slider-val { font-family:var(--font-display); font-size:13px; font-weight:700; color:var(--green); }
+input[type=range] { -webkit-appearance:none; width:100%; height:4px; background:var(--cream-mid); border-radius:4px; outline:none; cursor:pointer; }
+input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:16px; height:16px; background:var(--green-mid); border-radius:50%; box-shadow:0 0 0 3px var(--green-pale); }
+
+/* STATS & CARDS */
+.stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; }
+.stat-card { background:var(--white); border:1px solid var(--border); border-radius:var(--radius-md); padding:1rem; box-shadow:var(--shadow-sm); }
+.stat-label { font-size:10px; color:var(--ink-light); text-transform:uppercase; letter-spacing:.06em; margin-bottom:4px; }
+.stat-value { font-family:var(--font-display); font-size:1.1rem; font-weight:700; color:var(--green); line-height:1.2; }
+.stat-sub { font-size:11px; color:var(--ink-mid); margin-top:3px; }
+
+/* BUTTONS */
+.region-btn { background:var(--white); border:1px solid var(--border); border-radius:var(--radius-md); padding:10px 12px; cursor:pointer; text-align:left; width:100%; transition:all .18s; display:flex; align-items:center; gap:8px; box-shadow:var(--shadow-sm); margin-bottom:6px; }
+.region-btn:hover { border-color:var(--green-mid); }
+.region-btn.active { border-color:var(--green-mid); background:var(--green-pale); }
+.rb-icon { font-size:18px; flex-shrink:0; }
+.rb-name { font-family:var(--font-display); font-size:12px; font-weight:600; color:var(--ink); display:block; }
+.rb-sub { font-size:10px; color:var(--ink-mid); }
+
+.filter-row { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:1rem; }
+.filter-pill { font-size:11px; font-weight:600; padding:4px 12px; border:1px solid var(--border); border-radius:20px; background:var(--white); color:var(--ink-mid); cursor:pointer; transition:all .18s; }
+.filter-pill.active { background:var(--green-pale); border-color:var(--green-mid); color:var(--green); }
+.filter-pill.active-eq { background:#FEE2E2; border-color:#EF4444; color:#B91C1C; }
+.filter-pill.active-vol { background:#FEF3C7; border-color:#F59E0B; color:#92400E; }
+.filter-pill.active-ts { background:#DBEAFE; border-color:#3B82F6; color:#1D4ED8; }
+
+/* EVENT CARDS */
+.events-list { display:flex; flex-direction:column; gap:10px; }
+.event-card { background:var(--white); border:1px solid var(--border); border-radius:var(--radius-md); padding:1rem 1.25rem; border-left:3px solid var(--e-color,var(--green-light)); box-shadow:var(--shadow-sm); }
+.event-header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:5px; }
+.event-name { font-family:var(--font-display); font-size:13px; font-weight:600; color:var(--ink); }
+.event-year { font-size:11px; color:var(--ink-mid); }
+.event-desc { font-size:12px; color:var(--ink-mid); line-height:1.6; margin-bottom:5px; }
+.event-tags { display:flex; gap:5px; flex-wrap:wrap; }
+.event-tag { font-size:10px; padding:2px 7px; border-radius:4px; font-weight:600; }
+
+/* RICHTER SCALE */
+.richter-display { background:var(--green); border-radius:var(--radius-lg); padding:2rem; text-align:center; margin-bottom:1.25rem; }
+.richter-number { font-family:var(--font-serif); font-size:5rem; font-weight:700; color:#fff; line-height:1; display:block; }
+.richter-label { font-size:13px; color:rgba(255,255,255,0.8); margin-top:4px; }
+.damage-bars { display:flex; flex-direction:column; gap:8px; }
+.damage-row { display:flex; align-items:center; gap:10px; }
+.damage-label { font-size:12px; color:var(--ink-mid); width:130px; flex-shrink:0; }
+.damage-bar-wrap { flex:1; background:var(--cream-mid); border-radius:4px; height:8px; overflow:hidden; }
+.damage-bar-fill { height:100%; border-radius:4px; transition:width .4s; }
+.damage-value { font-size:11px; font-weight:600; width:60px; text-align:right; flex-shrink:0; }
+
+/* HAZARD MANAGEMENT */
+.decision-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.decision-btn { background:var(--white); border:1px solid var(--border); border-radius:var(--radius-md); padding:12px; cursor:pointer; text-align:left; transition:all .18s; box-shadow:var(--shadow-sm); }
+.decision-btn:hover { border-color:var(--green-mid); }
+.decision-btn.selected { background:var(--green-pale); border-color:var(--green-mid); }
+.decision-btn.wrong { background:#FEE2E2; border-color:#EF4444; }
+.db-title { font-family:var(--font-display); font-size:12px; font-weight:600; margin-bottom:2px; color:var(--ink); }
+.db-desc { font-size:11px; color:var(--ink-mid); line-height:1.4; }
+
+/* DEVELOPMENT */
+.country-selector { display:flex; gap:7px; flex-wrap:wrap; margin-bottom:1.25rem; }
+.country-btn { font-size:12px; font-weight:600; padding:5px 13px; border:1px solid var(--border); border-radius:20px; background:var(--white); color:var(--ink-mid); cursor:pointer; transition:all .18s; box-shadow:var(--shadow-sm); }
+.country-btn.active { background:var(--green-pale); border-color:var(--green-mid); color:var(--green); }
+.ind-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:10px; margin-bottom:1.25rem; }
+.ind-card { background:var(--white); border:1px solid var(--border); border-radius:var(--radius-md); padding:.9rem; box-shadow:var(--shadow-sm); }
+.ind-flag { font-size:11px; font-weight:700; color:var(--ink-mid); margin-bottom:2px; }
+.ind-lbl { font-size:10px; color:var(--ink-light); margin-bottom:5px; }
+.ind-val { font-family:var(--font-display); font-size:1.4rem; font-weight:700; color:var(--green); line-height:1; }
+.ind-bar { height:4px; background:var(--cream-mid); border-radius:4px; margin-top:7px; overflow:hidden; }
+.ind-fill { height:100%; border-radius:4px; }
+
+/* DISEASE */
+.disease-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:1rem; }
+.disease-card { background:var(--white); border:1px solid var(--border); border-radius:var(--radius-md); padding:1.25rem; box-shadow:var(--shadow-sm); border-top:3px solid var(--d-color,var(--green-light)); }
+.disease-name { font-family:var(--font-display); font-size:14px; font-weight:600; margin-bottom:4px; }
+.disease-type { font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:.06em; margin-bottom:8px; }
+.disease-desc { font-size:12px; color:var(--ink-mid); line-height:1.6; margin-bottom:10px; }
+.disease-stats { display:grid; grid-template-columns:1fr 1fr; gap:6px; }
+.ds-item { background:var(--cream); border-radius:6px; padding:7px 9px; }
+.ds-label { font-size:9px; color:var(--ink-light); text-transform:uppercase; letter-spacing:.05em; margin-bottom:2px; }
+.ds-value { font-family:var(--font-display); font-size:12px; font-weight:700; color:var(--ink); }
+
+/* COASTS */
+.coast-display { background:linear-gradient(to bottom, #87CEEB 0%, #87CEEB 50%, #C4A882 50%, #C4A882 100%); border-radius:var(--radius-lg); height:180px; position:relative; overflow:hidden; margin-bottom:1rem; display:flex; align-items:center; justify-content:center; }
+.wave-layer { position:absolute; bottom:50%; left:0; right:0; }
+.coast-label { font-family:var(--font-display); font-size:11px; font-weight:600; background:rgba(255,255,255,0.85); padding:4px 10px; border-radius:20px; }
+
+/* CHARTS */
+.charts-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.25rem; margin-bottom:1.25rem; }
+.chart-card { background:var(--white); border:1px solid var(--border); border-radius:var(--radius-lg); padding:1.25rem; box-shadow:var(--shadow-sm); }
+.chart-title { font-family:var(--font-display); font-size:13px; font-weight:600; margin-bottom:1rem; color:var(--ink); }
+.chart-wrap { position:relative; height:200px; }
+
+/* DATA FOOTNOTE */
+.data-footnote { background:var(--cream-dark); border:1px solid var(--border); border-radius:var(--radius-md); padding:.85rem 1.1rem; margin-top:1.25rem; font-size:11px; color:var(--ink-mid); line-height:1.6; }
+.data-footnote a { color:var(--green-mid); }
+
+/* WATER CARBON */
+.cycle-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.25rem; }
+.cycle-card { background:var(--white); border:1px solid var(--border); border-radius:var(--radius-lg); padding:1.5rem; box-shadow:var(--shadow-sm); }
+.cycle-title { font-family:var(--font-display); font-size:15px; font-weight:700; margin-bottom:.75rem; color:var(--ink); }
+.flow-list { display:flex; flex-direction:column; gap:8px; }
+.flow-item { display:flex; gap:10px; padding:9px 11px; background:var(--cream); border-radius:var(--radius-sm); }
+.flow-icon { font-size:16px; flex-shrink:0; }
+.flow-name { font-size:12px; font-weight:600; color:var(--ink); margin-bottom:1px; }
+.flow-desc { font-size:11px; color:var(--ink-mid); line-height:1.4; }
+
+/* MIGRATION */
+.migration-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:1rem; }
+.migration-card { background:var(--white); border:1px solid var(--border); border-radius:var(--radius-md); padding:1.25rem; box-shadow:var(--shadow-sm); border-left:3px solid var(--m-color,var(--green-light)); }
+.mig-route { font-family:var(--font-display); font-size:13px; font-weight:600; margin-bottom:4px; color:var(--ink); }
+.mig-type { font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-mid); margin-bottom:7px; }
+.mig-desc { font-size:12px; color:var(--ink-mid); line-height:1.6; }
+.mig-stats { display:flex; gap:8px; margin-top:8px; flex-wrap:wrap; }
+.mig-stat { font-size:10px; font-weight:600; padding:2px 8px; border-radius:4px; }
+
+/* PLACES */
+.place-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:1rem; }
+.place-card { background:var(--white); border:1px solid var(--border); border-radius:var(--radius-md); padding:1.25rem; box-shadow:var(--shadow-sm); border-top:3px solid var(--p-color,var(--green-light)); }
+.place-name { font-family:var(--font-display); font-size:14px; font-weight:700; margin-bottom:3px; color:var(--ink); }
+.place-type { font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-mid); margin-bottom:8px; }
+.place-desc { font-size:12px; color:var(--ink-mid); line-height:1.6; margin-bottom:10px; }
+.place-factors { display:flex; flex-direction:column; gap:5px; }
+.pf-item { display:flex; gap:8px; font-size:11px; }
+.pf-icon { flex-shrink:0; }
+.pf-text { color:var(--ink-mid); }
+.pf-text strong { color:var(--ink); }
+
+@media(max-width:900px){
+  .two-col{grid-template-columns:1fr}
+  .stats-grid{grid-template-columns:1fr 1fr}
+  .charts-grid{grid-template-columns:1fr}
+  .decision-grid{grid-template-columns:1fr}
+  .paper-tabs{margin-left:0;margin-top:1rem}
+  .cycle-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<header class="dh-header">
+  <div class="dh-header-inner">
+    <a href="../index.html" class="dh-logo">
+      <div class="dh-logo-chip"><img src="data:image/png;base64,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CZEOAAAASYh0AAAASEKkAwAAQBIiHQAAAJIQ6QAAAJCESAcAAIAkRDoAAAAkIdIBAAAgCZEOAAAASYh0AAAASEKkAwAAQBIiHQAAAJIQ6QAAAJCESAcAAIAkRDoAAAAkIdIBAAAgCZEOAAAASYh0AAAASEKkAwAAQBIiHQAAAJIQ6QAAAJCESAcAAIAkRDoAAAAkIdIBAAAgCZEOAAAASYh0AAAASEKkAwAAQBIiHQAAAJIQ6QAAAJCESAcAAIAkRDoAAAAkIdIBAAAgCZEOAAAASYh0AAAASEKkAwAAQBIiHQAAAJIQ6QAAAJCESAcAAIAkRDoAAAAkIdIBAAAgCZEOAAAASYh0AAAASEKkAwAAQBIiHQAAAJIQ6QAAAJCESAcAAIAkRDoAAAAkIdIBAAAgCZEOAAAASYh0AAAASEKkAwAAQBIiHQAAAJIQ6QAAAJCESAcAAIAkRDoAAAAkIdIBAAAgCZEOAAAASYh0AAAASEKkAwAAQBIiHQAAAJIQ6QAAAJCESAcAAIAkRDoAAMD/b7+OCQAAABAG2T+1NXZACyBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAACBC0gEAAKBg2wGMDPl5BT36QAAAAABJRU5ErkJggg==" alt="DH" style="width:22px;height:22px;object-fit:contain;filter:brightness(0) invert(1);"></div>
+      <div><span class="dh-logo-text">DH Lab</span><span class="dh-logo-sub">Downe House School</span></div>
+    </a>
+    <nav class="dh-nav">
+      <a href="../index.html" class="dh-nav-link">Home</a>
+      <a href="../econ/index.html" class="dh-nav-link">Economics</a>
+      <a href="../history/timeline.html" class="dh-nav-link">History</a>
+      <a href="index.html" class="dh-nav-link active">Geography</a>
+    </nav>
+    <div class="dh-header-right"><span class="dh-badge">OCR H481</span></div>
+  </div>
+</header>
+
+<div class="page-hero">
+  <div class="page-hero-inner">
+    <div class="page-hero-text">
+      <div class="hero-eyebrow">Geography · OCR H481</div>
+      <div class="hero-title">Geography Explorer</div>
+      <div class="hero-sub">Physical Systems · Human Interactions · Geographical Debates</div>
+    </div>
+    <div class="paper-tabs">
+      <button class="paper-tab active" onclick="switchPaper(this,'p1')">Paper 1: Physical Systems</button>
+      <button class="paper-tab" onclick="switchPaper(this,'p2')">Paper 2: Human Interactions</button>
+      <button class="paper-tab" onclick="switchPaper(this,'p3')">Paper 3: Debates</button>
+    </div>
+  </div>
+</div>
+
+<div class="page-content">
+
+<!-- ===================== PAPER 1 ===================== -->
+<div class="paper-panel active" id="panel-p1">
+  <div class="section-tabs">
+    <button class="section-tab active" onclick="switchSection(this,'p1','coasts')">🏖️ Section A: Coasts</button>
+    <button class="section-tab" onclick="switchSection(this,'p1','elss')">💧 Section B: Earth's Life Support Systems</button>
+  </div>
+
+  <!-- COASTS -->
+  <div class="section-panel active" id="p1-coasts">
+    <div class="two-col">
+      <aside class="sidebar">
+        <div class="card">
+          <div class="card-title">Wave & energy controls</div>
+          <div class="slider-group">
+            <div class="slider-row">
+              <div class="slider-top"><span class="slider-name">Wave energy</span><span class="slider-val" id="out-wave">Medium</span></div>
+              <input type="range" min="1" max="3" step="1" value="2" id="sl-wave" oninput="updateCoasts()">
+              <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--ink-light);margin-top:2px"><span>Low</span><span>Medium</span><span>High</span></div>
+            </div>
+            <div class="slider-row">
+              <div class="slider-top"><span class="slider-name">Rock resistance</span><span class="slider-val" id="out-rock">Medium</span></div>
+              <input type="range" min="1" max="3" step="1" value="2" id="sl-rock" oninput="updateCoasts()">
+              <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--ink-light);margin-top:2px"><span>Soft</span><span>Medium</span><span>Hard</span></div>
+            </div>
+            <div class="slider-row">
+              <div class="slider-top"><span class="slider-name">Sea level trend</span><span class="slider-val" id="out-sealevel">Stable</span></div>
+              <input type="range" min="1" max="3" step="1" value="2" id="sl-sealevel" oninput="updateCoasts()">
+              <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--ink-light);margin-top:2px"><span>Falling</span><span>Stable</span><span>Rising</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Wave types</div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div style="padding:9px;background:var(--cream);border-radius:var(--radius-sm)"><div style="font-size:12px;font-weight:600;margin-bottom:2px">Constructive waves</div><div style="font-size:11px;color:var(--ink-mid)">Long wavelength, low frequency (~6-8/min). Swash stronger than backwash. Build beaches.</div></div>
+            <div style="padding:9px;background:var(--cream);border-radius:var(--radius-sm)"><div style="font-size:12px;font-weight:600;margin-bottom:2px">Destructive waves</div><div style="font-size:11px;color:var(--ink-mid)">Short wavelength, high frequency (~10-14/min). Backwash stronger than swash. Erode cliffs.</div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Erosion processes</div>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div style="display:flex;gap:8px;font-size:11px"><span>💥</span><div><strong>Hydraulic action</strong> — water compresses air in cracks, forcing rock apart</div></div>
+            <div style="display:flex;gap:8px;font-size:11px"><span>🪨</span><div><strong>Abrasion</strong> — sediment carried by waves scrapes and wears the cliff</div></div>
+            <div style="display:flex;gap:8px;font-size:11px"><span>🔄</span><div><strong>Attrition</strong> — rocks in the sea knock together and become smaller, rounder</div></div>
+            <div style="display:flex;gap:8px;font-size:11px"><span>⚗️</span><div><strong>Solution</strong> — chemicals in seawater dissolve certain rock types (limestone)</div></div>
+          </div>
+        </div>
+      </aside>
+      <main class="main-content">
+        <div class="hero-card" id="coast-outcome">
+          <div class="hero-card-title">Coastal environment outcome</div>
+          <div class="hero-card-desc">Adjust the controls to see what type of coastal environment and landforms develop.</div>
+        </div>
+        <div class="stats-grid" id="coast-stats">
+          <div class="stat-card"><div class="stat-label">Dominant process</div><div class="stat-value" id="c-process">Balanced</div></div>
+          <div class="stat-card"><div class="stat-label">Erosion rate</div><div class="stat-value" id="c-erosion">Moderate</div></div>
+          <div class="stat-card"><div class="stat-label">Deposition rate</div><div class="stat-value" id="c-deposition">Moderate</div></div>
+          <div class="stat-card"><div class="stat-label">Likely landforms</div><div class="stat-value" id="c-landforms" style="font-size:.85rem">Beach, low cliffs</div></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Landform case studies</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px" id="landform-cards"></div>
+        </div>
+        <div class="syllabus-box"><div class="syllabus-label">OCR H481 — Paper 1, Section A: Landscape Systems (Coasts)</div><div class="syllabus-text">Students must understand coastal processes (erosion, transport, deposition), landform formation, and how coastal systems change over time. Key case studies: Holderness (rapid erosion), Chesil Beach (tombolo/bar), Flamborough Head (caves, arches, stacks). Management strategies (hard vs soft engineering) link to sustainability debates.</div></div>
+      </main>
+    </div>
+  </div>
+
+  <!-- ELSS -->
+  <div class="section-panel" id="p1-elss">
+    <div class="hero-card" style="margin-bottom:1.5rem">
+      <div class="hero-card-title">💧 Earth's Life Support Systems</div>
+      <div class="hero-card-desc">The water and carbon cycles are fundamental to life on Earth. They regulate climate, support ecosystems, and are increasingly disrupted by human activity. Understanding their stores, flows, and feedback loops is essential for Paper 1, Section B.</div>
+    </div>
+    <div class="cycle-grid">
+      <div class="cycle-card">
+        <div class="cycle-title">💧 The Water Cycle</div>
+        <div style="font-size:12px;color:var(--ink-mid);margin-bottom:1rem;line-height:1.6">The hydrological cycle moves water between the atmosphere, land surface, and oceans through evaporation, condensation, precipitation, and runoff. It is a <strong>closed system</strong> — no water enters or leaves Earth.</div>
+        <div class="card-title">Key stores</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:1rem">
+          <div style="padding:8px;background:var(--cream);border-radius:var(--radius-sm)"><div style="font-size:11px;font-weight:600">Oceans</div><div style="font-size:11px;color:var(--ink-mid)">96.5% of all water</div></div>
+          <div style="padding:8px;background:var(--cream);border-radius:var(--radius-sm)"><div style="font-size:11px;font-weight:600">Ice caps/glaciers</div><div style="font-size:11px;color:var(--ink-mid)">1.74% — shrinking</div></div>
+          <div style="padding:8px;background:var(--cream);border-radius:var(--radius-sm)"><div style="font-size:11px;font-weight:600">Groundwater</div><div style="font-size:11px;color:var(--ink-mid)">1.69% — aquifers</div></div>
+          <div style="padding:8px;background:var(--cream);border-radius:var(--radius-sm)"><div style="font-size:11px;font-weight:600">Atmosphere</div><div style="font-size:11px;color:var(--ink-mid)">0.001% — rain, cloud</div></div>
+        </div>
+        <div class="card-title">Key flows</div>
+        <div class="flow-list">
+          <div class="flow-item"><span class="flow-icon">☀️</span><div><div class="flow-name">Evapotranspiration</div><div class="flow-desc">Solar energy converts liquid water to vapour from surfaces and plants. Largest transfer in the cycle.</div></div></div>
+          <div class="flow-item"><span class="flow-icon">🌧️</span><div><div class="flow-name">Precipitation</div><div class="flow-desc">Water vapour condenses and falls as rain, snow, or hail. Drives river systems and groundwater recharge.</div></div></div>
+          <div class="flow-item"><span class="flow-icon">🏔️</span><div><div class="flow-name">Surface runoff</div><div class="flow-desc">Water flows over impermeable surfaces into rivers. Increased by urbanisation and deforestation.</div></div></div>
+          <div class="flow-item"><span class="flow-icon">🌊</span><div><div class="flow-name">Infiltration & throughflow</div><div class="flow-desc">Water soaks into soil and moves slowly through the ground to rivers and aquifers.</div></div></div>
+        </div>
+      </div>
+      <div class="cycle-card">
+        <div class="cycle-title">🌿 The Carbon Cycle</div>
+        <div style="font-size:12px;color:var(--ink-mid);margin-bottom:1rem;line-height:1.6">Carbon moves between the atmosphere, biosphere, hydrosphere, and lithosphere. Human emissions have significantly increased atmospheric CO₂, from 280 ppm pre-industrial to <strong>422 ppm in 2023</strong>.</div>
+        <div class="card-title">Key stores</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:1rem">
+          <div style="padding:8px;background:var(--cream);border-radius:var(--radius-sm)"><div style="font-size:11px;font-weight:600">Lithosphere</div><div style="font-size:11px;color:var(--ink-mid)">100,000,000 Gt — fossil fuels, rocks</div></div>
+          <div style="padding:8px;background:var(--cream);border-radius:var(--radius-sm)"><div style="font-size:11px;font-weight:600">Oceans</div><div style="font-size:11px;color:var(--ink-mid)">38,000 Gt — largest active store</div></div>
+          <div style="padding:8px;background:var(--cream);border-radius:var(--radius-sm)"><div style="font-size:11px;font-weight:600">Soil/permafrost</div><div style="font-size:11px;color:var(--ink-mid)">2,300 Gt — at risk from warming</div></div>
+          <div style="padding:8px;background:var(--cream);border-radius:var(--radius-sm)"><div style="font-size:11px;font-weight:600">Atmosphere</div><div style="font-size:11px;color:var(--ink-mid)">860 Gt — rising rapidly</div></div>
+        </div>
+        <div class="card-title">Key flows & human disruption</div>
+        <div class="flow-list">
+          <div class="flow-item"><span class="flow-icon">🌿</span><div><div class="flow-name">Photosynthesis</div><div class="flow-desc">Plants absorb ~120 Gt CO₂/year from the atmosphere. Deforestation reduces this natural sink.</div></div></div>
+          <div class="flow-item"><span class="flow-icon">🔥</span><div><div class="flow-name">Combustion (human)</div><div class="flow-desc">Burning fossil fuels releases ~36 Gt CO₂/year — carbon stored over millions of years released in decades.</div></div></div>
+          <div class="flow-item"><span class="flow-icon">🌊</span><div><div class="flow-name">Ocean uptake</div><div class="flow-desc">Oceans absorb ~25% of human CO₂ emissions, but this increases ocean acidification.</div></div></div>
+          <div class="flow-item"><span class="flow-icon">🧊</span><div><div class="flow-name">Permafrost feedback</div><div class="flow-desc">Thawing permafrost releases stored methane and CO₂ — a dangerous positive feedback loop.</div></div></div>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:1.25rem">
+      <div class="card-title" style="margin-bottom:1rem">Human impacts on both cycles</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px">
+        <div style="padding:1rem;background:var(--white);border:1px solid var(--border);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);border-top:3px solid #EF4444"><div style="font-size:13px;font-weight:600;margin-bottom:4px">Deforestation</div><div style="font-size:12px;color:var(--ink-mid)">Reduces interception and transpiration (water cycle). Removes carbon sink and releases stored carbon (carbon cycle). Increases surface runoff and flood risk.</div></div>
+        <div style="padding:1rem;background:var(--white);border:1px solid var(--border);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);border-top:3px solid #F59E0B"><div style="font-size:13px;font-weight:600;margin-bottom:4px">Urbanisation</div><div style="font-size:12px;color:var(--ink-mid)">Impermeable surfaces increase runoff and reduce infiltration (water cycle). Urban heat islands intensify evaporation. Higher energy use increases carbon emissions.</div></div>
+        <div style="padding:1rem;background:var(--white);border:1px solid var(--border);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);border-top:3px solid var(--green-mid)"><div style="font-size:13px;font-weight:600;margin-bottom:4px">Agriculture</div><div style="font-size:12px;color:var(--ink-mid)">Irrigation disrupts local water cycles. Livestock produce methane. Soil tillage releases stored carbon. Wetland drainage removes carbon sinks.</div></div>
+        <div style="padding:1rem;background:var(--white);border:1px solid var(--border);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);border-top:3px solid #3B82F6"><div style="font-size:13px;font-weight:600;margin-bottom:4px">Climate change feedback</div><div style="font-size:12px;color:var(--ink-mid)">Warming increases evaporation (intensifying the water cycle). Melting permafrost releases CO₂/methane. Reduced snow cover lowers albedo, amplifying warming.</div></div>
+      </div>
+    </div>
+    <div class="syllabus-box" style="margin-top:1.25rem"><div class="syllabus-label">OCR H481 — Paper 1, Section B: Earth's Life Support Systems</div><div class="syllabus-text">Students must understand the water and carbon cycles as systems — their stores, flows, and the feedback mechanisms that link them. Key themes: how human activity is disrupting both cycles; the role of the oceans and biosphere as carbon sinks; and how these disruptions link to climate change. The relationship between these cycles and life on Earth is the unifying concept.</div></div>
+  </div>
+</div>
+
+<!-- ===================== PAPER 2 ===================== -->
+<div class="paper-panel" id="panel-p2">
+  <div class="section-tabs">
+    <button class="section-tab active" onclick="switchSection(this,'p2','places')">🏙️ Section A: Changing Spaces, Making Places</button>
+    <button class="section-tab" onclick="switchSection(this,'p2','migration')">✈️ Section B: Human Rights & Global Migration</button>
+  </div>
+
+  <!-- CHANGING PLACES -->
+  <div class="section-panel active" id="p2-places">
+    <div class="hero-card" style="margin-bottom:1.5rem">
+      <div class="hero-card-title">🏙️ Changing Spaces, Making Places</div>
+      <div class="hero-card-desc">Places are not fixed — they are constantly being made and remade by economic, social, and cultural forces. This section explores how places change, how people experience and represent them, and what drives regeneration or decline. The spec asks: what makes a place? How do they change? Who has the power to shape them?</div>
+    </div>
+    <div class="place-grid" id="place-grid"></div>
+    <div style="margin-top:1.5rem">
+      <div class="card-title" style="margin-bottom:1rem">Theories of place change</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px">
+        <div style="padding:1rem;background:var(--white);border:1px solid var(--border);border-radius:var(--radius-md);box-shadow:var(--shadow-sm)"><div style="font-size:13px;font-weight:600;margin-bottom:4px">Deindustrialisation</div><div style="font-size:12px;color:var(--ink-mid)">The decline of manufacturing in the late 20th century transformed industrial cities. Detroit lost 60% of its population; Sheffield and Manchester had to reinvent themselves around services and culture.</div></div>
+        <div style="padding:1rem;background:var(--white);border:1px solid var(--border);border-radius:var(--radius-md);box-shadow:var(--shadow-sm)"><div style="font-size:13px;font-weight:600;margin-bottom:4px">Gentrification</div><div style="font-size:12px;color:var(--ink-mid)">Higher-income groups move into historically working-class areas, raising property values and displacing existing communities. Seen in Brixton, London and Hackney. A contested process.</div></div>
+        <div style="padding:1rem;background:var(--white);border:1px solid var(--border);border-radius:var(--radius-md);box-shadow:var(--shadow-sm)"><div style="font-size:13px;font-weight:600;margin-bottom:4px">Regeneration strategies</div><div style="font-size:12px;color:var(--ink-mid)">Urban Development Corporations, Enterprise Zones, and culture-led regeneration (e.g. Bilbao's Guggenheim effect) are used to attract investment to declining areas. Success is debated.</div></div>
+        <div style="padding:1rem;background:var(--white);border:1px solid var(--border);border-radius:var(--radius-md);box-shadow:var(--shadow-sm)"><div style="font-size:13px;font-weight:600;margin-bottom:4px">Sense of place</div><div style="font-size:12px;color:var(--ink-mid)">Geographers study how places develop meaning and identity. Place identity is shaped by who has the power to represent a place — through marketing, art, media, and planning decisions.</div></div>
+      </div>
+    </div>
+    <div class="syllabus-box" style="margin-top:1.25rem"><div class="syllabus-label">OCR H481 — Paper 2, Section A: Changing Spaces, Making Places</div><div class="syllabus-text">Students explore how places develop their character, how this changes over time, and the role of different stakeholders in shaping place identity. Key case studies: at least two contrasting places (one local, one further afield). Themes include: economic change, social inequality, regeneration, and the contested nature of place. Students must use primary and secondary data to investigate place change.</div></div>
+  </div>
+
+  <!-- MIGRATION -->
+  <div class="section-panel" id="p2-migration">
+    <div class="hero-card" style="margin-bottom:1.5rem">
+      <div class="hero-card-title">✈️ Global Connections: Human Rights & Migration</div>
+      <div class="hero-card-desc">Global migration is one of the defining issues of the 21st century. People move for economic opportunity, to flee conflict or persecution, or because of environmental change. The governance of migration — and the protection of human rights — involves complex tensions between national sovereignty and international obligations.</div>
+    </div>
+    <div style="margin-bottom:1.25rem">
+      <div class="filter-row">
+        <button class="filter-pill active" onclick="filterMigration(this,'all')">All</button>
+        <button class="filter-pill" onclick="filterMigration(this,'economic')">💼 Economic</button>
+        <button class="filter-pill" onclick="filterMigration(this,'forced')">🚨 Forced/Refugee</button>
+        <button class="filter-pill" onclick="filterMigration(this,'climate')">🌊 Climate</button>
+      </div>
+      <div class="migration-grid" id="migration-grid"></div>
+    </div>
+    <div style="margin-top:1rem">
+      <div class="card-title" style="margin-bottom:1rem">Human rights framework</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px">
+        <div style="padding:1rem;background:var(--white);border:1px solid var(--border);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);border-left:3px solid var(--green-mid)"><div style="font-size:13px;font-weight:600;margin-bottom:4px">Universal Declaration of Human Rights (1948)</div><div style="font-size:12px;color:var(--ink-mid)">Establishes the right to seek asylum, the right to a nationality, and freedom from persecution. Non-binding but forms the basis of international refugee law.</div></div>
+        <div style="padding:1rem;background:var(--white);border:1px solid var(--border);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);border-left:3px solid var(--gold)"><div style="font-size:13px;font-weight:600;margin-bottom:4px">1951 Refugee Convention</div><div style="font-size:12px;color:var(--ink-mid)">Defines who is a refugee and their rights. States cannot return refugees to countries where they face serious threats (non-refoulement). Does not cover climate migrants — a major gap.</div></div>
+        <div style="padding:1rem;background:var(--white);border:1px solid var(--border);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);border-left:3px solid #3B82F6"><div style="font-size:13px;font-weight:600;margin-bottom:4px">UN Global Compact for Migration (2018)</div><div style="font-size:12px;color:var(--ink-mid)">First global framework to address international migration comprehensively. Non-binding. Aims to make migration safer and more orderly. US, Hungary, and others refused to sign.</div></div>
+        <div style="padding:1rem;background:var(--white);border:1px solid var(--border);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);border-left:3px solid #EF4444"><div style="font-size:13px;font-weight:600;margin-bottom:4px">Climate migration — the gap</div><div style="font-size:12px;color:var(--ink-mid)">Climate migrants have no legal protection under international law. By 2050, 216 million people may be internally displaced by climate change. This is the major emerging human rights challenge.</div></div>
+      </div>
+    </div>
+    <div class="syllabus-box" style="margin-top:1.25rem"><div class="syllabus-label">OCR H481 — Paper 2, Section B: Global Connections (Human Rights & Migration)</div><div class="syllabus-text">Students study the causes, patterns, and consequences of international migration, and the governance frameworks designed to manage it. Key debates: economic vs. forced migration; the rights of refugees vs. national sovereignty; the challenge of climate migration; the role of TNCs and remittances in development. Must include both origin and destination country perspectives.</div></div>
+  </div>
+</div>
+
+<!-- ===================== PAPER 3 ===================== -->
+<div class="paper-panel" id="panel-p3">
+  <div class="section-tabs">
+    <button class="section-tab active" onclick="switchSection(this,'p3','hazards')">⚠️ Topic 3.5: Hazardous Earth</button>
+    <button class="section-tab" onclick="switchSection(this,'p3','disease')">🦠 Topic 3.2: Disease Dilemmas</button>
+  </div>
+
+  <!-- HAZARDOUS EARTH -->
+  <div class="section-panel active" id="p3-hazards">
+    <div class="two-col">
+      <aside class="sidebar">
+        <div class="card">
+          <div class="card-title">🔴 Richter Scale Simulator</div>
+          <div class="slider-row" style="margin-bottom:1rem">
+            <div class="slider-top"><span class="slider-name">Magnitude</span><span class="slider-val" id="richter-val">6.0</span></div>
+            <input type="range" min="1" max="9.5" step="0.1" value="6.0" id="sl-richter" oninput="updateRichter()">
+            <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--ink-light);margin-top:2px"><span>M1</span><span>M5</span><span>M9.5</span></div>
+          </div>
+          <div class="richter-display">
+            <span class="richter-number" id="richter-display">6.0</span>
+            <div class="richter-label" id="richter-category">Strong</div>
+          </div>
+          <div class="damage-bars" id="damage-bars"></div>
+        </div>
+        <div class="card" style="margin-top:0">
+          <div class="card-title">Depth & vulnerability factors</div>
+          <div class="slider-group">
+            <div class="slider-row">
+              <div class="slider-top"><span class="slider-name">Focal depth</span><span class="slider-val" id="out-depth">Intermediate</span></div>
+              <input type="range" min="1" max="3" step="1" value="2" id="sl-depth" oninput="updateRichter()">
+              <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--ink-light);margin-top:2px"><span>Shallow</span><span>Intermediate</span><span>Deep</span></div>
+            </div>
+            <div class="slider-row">
+              <div class="slider-top"><span class="slider-name">Country development</span><span class="slider-val" id="out-dev">Middle income</span></div>
+              <input type="range" min="1" max="3" step="1" value="2" id="sl-dev" oninput="updateRichter()">
+              <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--ink-light);margin-top:2px"><span>LEDC</span><span>Middle</span><span>MEDC</span></div>
+            </div>
+          </div>
+          <div class="insight-box" style="margin-top:1rem">
+            <div class="insight-label">Predicted outcome</div>
+            <div class="insight-text" id="richter-insight">Adjust the magnitude and vulnerability factors to see the predicted impact.</div>
+          </div>
+        </div>
+      </aside>
+      <main class="main-content">
+        <div class="hero-card">
+          <div class="hero-card-title">⚠️ Hazard Management Decision Simulator</div>
+          <div class="hero-card-desc">You are the emergency management coordinator for a region facing an imminent M7.0 earthquake. A series of decisions must be made. Choose wisely — each decision affects lives, costs, and long-term resilience.</div>
+        </div>
+        <div id="hazard-game"></div>
+        <div class="card" style="margin-top:0">
+          <div class="card-title">Hazard management strategies</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div style="padding:10px;background:var(--cream);border-radius:var(--radius-sm);border-left:3px solid var(--green-mid)"><div style="font-size:12px;font-weight:600;margin-bottom:3px">Prediction & monitoring</div><div style="font-size:11px;color:var(--ink-mid)">Seismometers, GPS ground deformation, radon gas sensors. Japan's early warning system gives 30-90 seconds notice. Cannot prevent but reduces casualties.</div></div>
+            <div style="padding:10px;background:var(--cream);border-radius:var(--radius-sm);border-left:3px solid var(--gold)"><div style="font-size:12px;font-weight:600;margin-bottom:3px">Building design</div><div style="font-size:11px;color:var(--ink-mid)">Base isolators, cross-bracing, flexible frames. Japan's strict building codes saved thousands in 2011. Haiti's weak buildings turned M7.0 into 300,000 deaths.</div></div>
+            <div style="padding:10px;background:var(--cream);border-radius:var(--radius-sm);border-left:3px solid #3B82F6"><div style="font-size:12px;font-weight:600;margin-bottom:3px">Land use planning</div><div style="font-size:11px;color:var(--ink-mid)">Restricting development in high-risk zones. Exclusion zones around volcanoes. Coastal setback lines for tsunami risk. Politically difficult but highly effective.</div></div>
+            <div style="padding:10px;background:var(--cream);border-radius:var(--radius-sm);border-left:3px solid #EF4444"><div style="font-size:12px;font-weight:600;margin-bottom:3px">Emergency response</div><div style="font-size:11px;color:var(--ink-mid)">Evacuation plans, stockpiled supplies, trained response teams. New Zealand's GeoNet system. The first 72 hours are critical for survival of trapped victims.</div></div>
+          </div>
+        </div>
+        <div class="syllabus-box"><div class="syllabus-label">OCR H481 — Paper 3, Topic 3.5: Hazardous Earth</div><div class="syllabus-text">Students debate whether tectonic hazards are natural disasters or the result of human vulnerability. Key themes: the role of development level in determining casualties (compare Haiti 2010 and Japan 2011, both M7+); the effectiveness of different management strategies; and whether prediction or preparedness is more valuable. Must evaluate evidence and argue a sustained case.</div></div>
+      </main>
+    </div>
+  </div>
+
+  <!-- DISEASE DILEMMAS -->
+  <div class="section-panel" id="p3-disease">
+    <div class="hero-card" style="margin-bottom:1.5rem">
+      <div class="hero-card-title">🦠 Disease Dilemmas</div>
+      <div class="hero-card-desc">Disease patterns are shaped by physical environments, social inequality, economic development, and governance. The key debate: are diseases natural phenomena or the product of human choices and social conditions? Students must distinguish between communicable and non-communicable diseases and evaluate the role of different factors in their spread and management.</div>
+    </div>
+    <div class="filter-row">
+      <button class="filter-pill active" onclick="filterDisease(this,'all')">All diseases</button>
+      <button class="filter-pill" onclick="filterDisease(this,'communicable')">🦠 Communicable</button>
+      <button class="filter-pill" onclick="filterDisease(this,'non-communicable')">❤️ Non-communicable</button>
+    </div>
+    <div class="disease-grid" id="disease-grid"></div>
+    <div style="margin-top:1.5rem">
+      <div class="card-title" style="margin-bottom:1rem">Key debate questions (Paper 3 essay focus)</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px">
+        <div style="padding:1rem;background:var(--white);border:1px solid var(--border);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);border-top:3px solid var(--green-mid)"><div style="font-size:13px;font-weight:600;margin-bottom:4px">"Disease is fundamentally a product of poverty"</div><div style="font-size:12px;color:var(--ink-mid)">Evaluate: tuberculosis, cholera, and malaria disproportionately kill the poor. But non-communicable diseases now kill more in LEDCs too. Is development always the answer?</div></div>
+        <div style="padding:1rem;background:var(--white);border:1px solid var(--border);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);border-top:3px solid var(--gold)"><div style="font-size:13px;font-weight:600;margin-bottom:4px">Cultural factors & NCDs</div><div style="font-size:12px;color:var(--ink-mid)">Diet, smoking, alcohol, and physical activity are culturally influenced. How far are non-communicable diseases a product of choice vs. structural inequality and corporate behaviour?</div></div>
+        <div style="padding:1rem;background:var(--white);border:1px solid var(--border);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);border-top:3px solid #3B82F6"><div style="font-size:13px;font-weight:600;margin-bottom:4px">Global governance of disease</div><div style="font-size:12px;color:var(--ink-mid)">WHO coordinates responses — but COVID revealed its limitations. Vaccine nationalism vs. COVAX. How effective is international cooperation when national interests conflict?</div></div>
+      </div>
+    </div>
+    <div class="syllabus-box" style="margin-top:1.25rem"><div class="syllabus-label">OCR H481 — Paper 3, Topic 3.2: Disease Dilemmas</div><div class="syllabus-text">Students must understand the global distribution of communicable and non-communicable diseases, the factors that influence their spread (physical, social, economic, cultural, political), and the effectiveness of different management strategies. The debate centres on whether disease patterns reflect natural geography or human inequality — and what interventions are most effective and equitable.</div></div>
+  </div>
+</div>
+
+</div><!-- end page-content -->
+
+<script>
+// ===== PAPER/SECTION SWITCHING =====
+function switchPaper(btn, paper) {
+  document.querySelectorAll('.paper-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.paper-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-'+paper).classList.add('active');
+}
+
+function switchSection(btn, paper, section) {
+  const panel = document.getElementById('panel-'+paper);
+  panel.querySelectorAll('.section-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  panel.querySelectorAll('.section-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById(paper+'-'+section).classList.add('active');
+}
+
+// ===== COASTS =====
+const WAVE_LABELS = ['Low','Medium','High'];
+const ROCK_LABELS = ['Soft','Medium','Hard'];
+const SL_LABELS = ['Falling','Stable','Rising'];
+
+const COAST_OUTCOMES = {
+  '1-1-1': {proc:'Deposition dominant',eros:'Very low',dep:'Very high',forms:'Extensive beaches, spits, bars',desc:'Low-energy waves with soft rock and falling sea level — maximum deposition. Large beaches and coastal plains build out rapidly. Classic example: parts of the Holderness coast before human interference.'},
+  '1-1-2': {proc:'Deposition dominant',eros:'Low',dep:'High',forms:'Beaches, spits, mudflats',desc:'Constructive waves build features even with soft rock. Stable sea level allows features to persist.'},
+  '1-1-3': {proc:'Mixed — coastal squeeze',eros:'Low-medium',dep:'Moderate',forms:'Disappearing beaches, salt marsh loss',desc:'Rising sea level threatens low-lying depositional features. Coastal squeeze occurs where development prevents inland migration.'},
+  '2-1-1': {proc:'Deposition dominant',eros:'Low',dep:'High',forms:'Wide beaches, sandbars',desc:'Medium-energy waves over soft rock with falling sea level. Rapid accumulation of sediment.'},
+  '2-1-2': {proc:'Balanced system',eros:'Moderate',dep:'Moderate',forms:'Beach, low cliffs, wave-cut platform',desc:'A balanced system in equilibrium. Features form but are also reworked regularly. Most common UK coastline type.'},
+  '2-1-3': {proc:'Erosion increasing',eros:'High',dep:'Low',forms:'Retreating cliffs, narrowing beach',desc:'Rising sea levels increase wave energy and reduce sediment availability — the beach narrows as cliffs retreat faster.'},
+  '3-1-1': {proc:'Erosion dominant',eros:'High',dep:'Very low',forms:'Cliffs, caves, arches, stacks',desc:'High energy waves attacking soft rock — very rapid erosion. Flamborough Head-style cliffs but in weaker material. Very fast retreat.'},
+  '3-1-2': {proc:'Erosion dominant',eros:'Very high',dep:'Very low',forms:'Rapid cliff retreat, slumping',desc:'High energy waves + soft rock = dramatic erosion. Holderness coast loses 2m/year on average. Fastest eroding coastline in Europe.'},
+  '3-1-3': {proc:'Extreme erosion',eros:'Extreme',dep:'Negligible',forms:'Mass movement, slumping, rapid retreat',desc:'The most erosive combination. Rising seas + high energy + soft rock. Villages like Skipsea on Holderness have been lost to the sea.'},
+  '1-2-1': {proc:'Deposition dominant',eros:'Very low',dep:'High',forms:'Beaches, dunes, tombolo',desc:'Low energy + medium rock + falling sea: coastal features accumulate. Chesil Beach formed under similar conditions.'},
+  '1-2-2': {proc:'Deposition dominant',eros:'Low',dep:'Moderate',forms:'Sandy beach, bars, spits',desc:'Classic low-energy, medium-resistance coastline. Features are stable and persistent. Tourism-friendly environment.'},
+  '1-2-3': {proc:'Coastal squeeze risk',eros:'Low',dep:'Moderate',forms:'Beach narrowing, dune erosion',desc:'Rising seas threaten depositional features. Beach material may be carried to depth rather than replenished.'},
+  '2-2-1': {proc:'Balanced',eros:'Low',dep:'Moderate',forms:'Beach, small cliffs, platform',desc:'The equilibrium coastline. Sediment budget roughly balanced. Gentle processes shaping a varied coastline.'},
+  '2-2-2': {proc:'Balanced system',eros:'Moderate',dep:'Moderate',forms:'Beach, low cliffs, wave-cut platform',desc:'The classic balanced UK coastline. Seasonal variation between erosion (winter storms) and deposition (summer calm).'},
+  '2-2-3': {proc:'Erosion increasing',eros:'Moderate-High',dep:'Low',forms:'Cliff retreat, beach loss',desc:'Rising sea levels tip the balance towards erosion. Common future scenario for much of the UK coast.'},
+  '3-2-1': {proc:'Erosion dominant',eros:'High',dep:'Very low',forms:'Cliffs, headlands, platforms',desc:'High energy attacks medium-resistance rock. Classic erosional scenery but slower than soft rock.'},
+  '3-2-2': {proc:'Erosion dominant',eros:'High',dep:'Very low',forms:'Caves, arches, stacks, stumps',desc:'The textbook erosional sequence. Flamborough Head, Dorset coast. Hydraulic action creates caves; arches collapse into stacks.'},
+  '3-2-3': {proc:'Rapid erosion',eros:'Very high',dep:'Negligible',forms:'Active cliff retreat, landslides',desc:'Rising seas + high energy + medium rock = accelerating erosion. Many UK coastlines face this future.'},
+  '1-3-1': {proc:'Stable/depositional',eros:'Very low',dep:'Low',forms:'Rocky shore, rock platforms',desc:'Hard rock resists even low-energy waves. Features are ancient and very slowly changing.'},
+  '1-3-2': {proc:'Very stable',eros:'Very low',dep:'Very low',forms:'Rocky shore, pebble beach',desc:'Hard rock + low energy + stable sea level: geological time required for significant change. Ancient features dominate.'},
+  '1-3-3': {proc:'Minimal change',eros:'Very low',dep:'Low',forms:'Exposed rocky shore',desc:'Even rising seas make little difference against hard resistant rock. Changes occur over thousands of years.'},
+  '2-3-1': {proc:'Slow erosion',eros:'Low',dep:'Very low',forms:'Headlands, cliffs, platforms',desc:'Medium energy + hard rock: slow but steady erosion over long timescales. Classic granite cliffs.'},
+  '2-3-2': {proc:'Slow erosion',eros:'Low-Moderate',dep:'Very low',forms:'Headlands, bays, caves forming',desc:'Hard rock coastlines erode slowly but develop distinctive features — headlands, bays, sea caves. Cornwall, Pembrokeshire.'},
+  '2-3-3': {proc:'Slow erosion, rising risk',eros:'Moderate',dep:'Negligible',forms:'Cliff erosion, rockfall increasing',desc:'Even hard rock faces greater erosion pressure from rising seas. Long-term risk to coastal communities previously considered safe.'},
+  '3-3-1': {proc:'Slow erosion',eros:'Moderate',dep:'Very low',forms:'Dramatic cliffs, caves',desc:'High energy meets hard rock: spectacular scenery (Cliffs of Moher, Seven Sisters) but very slow change.'},
+  '3-3-2': {proc:'Erosion dominant',eros:'Moderate-High',dep:'Very low',forms:'Classic cliffs, arches, stacks',desc:'The dramatic erosional coastline. Old Harry Rocks (Dorset), Stack Rocks (Pembrokeshire). Geological time but impressive features.'},
+  '3-3-3': {proc:'Accelerating erosion',eros:'High',dep:'Very low',forms:'Cliff instability, rockfalls',desc:'Even hard-rock coasts face increasing erosion from rising seas and more powerful storms. Long-term stability cannot be assumed.'}
+};
+
+const LANDFORMS = [
+  {name:'Wave-cut platform',proc:'Erosion',desc:'Flat rocky surface at cliff base. Exposed at low tide. Created as cliff retreats, leaving the wave-cut notch and then the platform behind.',eg:'Robin Hood's Bay, Yorkshire'},
+  {name:'Cave → Arch → Stack → Stump',proc:'Erosion',desc:'The classic coastal erosion sequence. Hydraulic action creates a cave; caves on both sides of a headland join to form an arch; arch collapses leaving a stack; stack erodes to a stump.',eg:'Old Harry Rocks, Dorset'},
+  {name:'Spit',proc:'Deposition',desc:'A finger of sand or shingle extending from the coast into the sea or across an estuary mouth. Formed by longshore drift. Often curved at the end due to wave refraction.',eg:'Spurn Head, Yorkshire; Hurst Castle Spit, Hampshire'},
+  {name:'Tombolo',proc:'Deposition',desc:'A spit that connects an island to the mainland. Sediment accumulates in the wave shadow behind the island, eventually building a causeway.',eg:'Chesil Beach connecting Portland Bill, Dorset'},
+  {name:'Bar',proc:'Deposition',desc:'A ridge of sand or shingle that extends across a bay. Can enclose a lagoon. Forms where longshore drift is interrupted and sediment accumulates.',eg:'Slapton Ley, Devon'},
+  {name:'Salt marsh',proc:'Deposition',desc:'Fine sediment accumulates in sheltered areas behind spits or in estuaries. Colonised by halophytic (salt-tolerant) plants. Important carbon store and coastal defence.',eg:'North Norfolk Coast, behind Blakeney Point'}
+];
+
+function updateCoasts() {
+  const wave = document.getElementById('sl-wave').value;
+  const rock = document.getElementById('sl-rock').value;
+  const sl = document.getElementById('sl-sealevel').value;
+  document.getElementById('out-wave').textContent = WAVE_LABELS[wave-1];
+  document.getElementById('out-rock').textContent = ROCK_LABELS[rock-1];
+  document.getElementById('out-sealevel').textContent = SL_LABELS[sl-1];
+  const key = wave+'-'+rock+'-'+sl;
+  const outcome = COAST_OUTCOMES[key] || COAST_OUTCOMES['2-2-2'];
+  document.getElementById('c-process').textContent = outcome.proc;
+  document.getElementById('c-erosion').textContent = outcome.eros;
+  document.getElementById('c-deposition').textContent = outcome.dep;
+  document.getElementById('c-landforms').textContent = outcome.forms;
+  document.getElementById('coast-outcome').innerHTML = `<div class="hero-card-title">Coastal environment outcome</div><div class="hero-card-desc">${outcome.desc}</div>`;
+}
+
+function renderLandforms() {
+  document.getElementById('landform-cards').innerHTML = LANDFORMS.map(l=>`
+    <div style="padding:10px;background:var(--cream);border-radius:var(--radius-sm)">
+      <div style="font-size:12px;font-weight:600;margin-bottom:3px">${l.name} <span style="font-size:10px;color:var(--ink-light);font-weight:400">(${l.proc})</span></div>
+      <div style="font-size:11px;color:var(--ink-mid);line-height:1.5;margin-bottom:4px">${l.desc}</div>
+      <div style="font-size:10px;color:var(--green-mid);font-weight:600">📍 ${l.eg}</div>
+    </div>`).join('');
+}
+
+// ===== RICHTER =====
+const RICHTER_CATS = [
+  {min:0,max:2,label:'Micro — not felt',col:'#10B981'},
+  {min:2,max:3,label:'Minor — rarely felt',col:'#34D399'},
+  {min:3,max:4,label:'Light — felt by some',col:'#F5A623'},
+  {min:4,max:5,label:'Moderate — felt widely',col:'#FB923C'},
+  {min:5,max:6,label:'Strong — damage to weak structures',col:'#EF4444'},
+  {min:6,max:7,label:'Strong — moderate damage',col:'#DC2626'},
+  {min:7,max:8,label:'Major — serious damage',col:'#B91C1C'},
+  {min:8,max:9,label:'Great — widespread devastation',col:'#7F1D1D'},
+  {min:9,max:12,label:'Extreme — near-total destruction',col:'#450A0A'},
+];
+
+function updateRichter() {
+  const mag = parseFloat(document.getElementById('sl-richter').value);
+  const depth = parseInt(document.getElementById('sl-depth').value);
+  const dev = parseInt(document.getElementById('sl-dev').value);
+  const depthLabels = ['Shallow (0-70km)','Intermediate (70-300km)','Deep (300km+)'];
+  const devLabels = ['LEDC','Middle income','MEDC'];
+  document.getElementById('richter-val').textContent = mag.toFixed(1);
+  document.getElementById('richter-display').textContent = mag.toFixed(1);
+  document.getElementById('out-depth').textContent = depthLabels[depth-1];
+  document.getElementById('out-dev').textContent = devLabels[dev-1];
+
+  const cat = RICHTER_CATS.find(c=>mag>=c.min && mag<c.max) || RICHTER_CATS[8];
+  document.getElementById('richter-category').textContent = cat.label;
+  document.getElementById('richter-display').style.color = '#FFFFFF';
+  document.querySelector('.richter-display').style.background = cat.col;
+
+  // Calculate damage scores (0-100) modified by depth and development
+  const magScore = Math.min(100, ((mag-1)/8.5)*100);
+  const depthMod = depth===1?1.3:depth===2?1.0:0.6; // shallow = worse
+  const devMod = dev===1?1.4:dev===2?1.0:0.6; // LEDC = worse
+
+  const shaking = Math.min(100, magScore * depthMod);
+  const building = Math.min(100, magScore * depthMod * devMod);
+  const casualties = Math.min(100, magScore * depthMod * devMod * (dev===1?1.5:1));
+  const economic = Math.min(100, magScore * (dev===3?1.4:1)); // MEDC loses more $
+
+  document.getElementById('damage-bars').innerHTML = [
+    {label:'Ground shaking',val:shaking,col:'#F59E0B'},
+    {label:'Building damage',val:building,col:'#EF4444'},
+    {label:'Casualty risk',val:casualties,col:'#B91C1C'},
+    {label:'Economic loss',val:economic,col:'#7C3AED'}
+  ].map(d=>`
+    <div class="damage-row">
+      <div class="damage-label">${d.label}</div>
+      <div class="damage-bar-wrap"><div class="damage-bar-fill" style="width:${d.val.toFixed(0)}%;background:${d.col}"></div></div>
+      <div class="damage-value" style="color:${d.col}">${d.val.toFixed(0)}%</div>
+    </div>`).join('');
+
+  // Insight text
+  let insight = '';
+  if (mag < 4) insight = 'Minimal damage expected. Most people will not feel this earthquake.';
+  else if (mag < 5) insight = 'Some felt shaking, minor damage to weak structures. No major casualties expected.';
+  else if (mag < 6) {
+    if (dev===1) insight = `A M${mag.toFixed(1)} earthquake in an LEDC with poor building standards could cause significant casualties — as seen in Haiti (M7.0, 300,000 deaths). Emergency response likely inadequate.`;
+    else insight = `Moderate damage to older buildings. A well-prepared MEDC like Japan would manage this with few casualties. Early warning systems would give critical seconds.`;
+  } else if (mag < 7) {
+    if (dev===1) insight = `Potentially catastrophic in a poorly-prepared LEDC. This magnitude in Haiti killed 100,000+. Key factors: building quality, emergency response, and governance.`;
+    else insight = `Serious damage possible even in MEDCs. The 1995 Kobe earthquake (M6.9) killed 6,400 despite Japan's preparedness — older buildings were the main weakness.`;
+  } else if (mag < 8) {
+    insight = `A major earthquake. At M${mag.toFixed(1)}, widespread destruction is likely regardless of development level. The 2011 Tōhoku earthquake (M9.1) showed even the most prepared nations face limits.`;
+  } else {
+    insight = `A great or extreme earthquake — among the most powerful ever recorded. M${mag.toFixed(1)} events reshape landscapes and can affect entire nations. The 1960 Valdivia earthquake (M9.5) remains the most powerful ever recorded.`;
+  }
+  document.getElementById('richter-insight').textContent = insight;
+}
+
+// ===== HAZARD GAME =====
+const HAZARD_SCENARIOS = [
+  {
+    q:'A M7.0 earthquake is predicted in the next 48 hours. What is your FIRST priority?',
+    options:[
+      {text:'Issue immediate evacuation order for all residents',outcome:'⚠️ Evacuating everyone causes panic, traffic jams block emergency routes, and hospitals are overwhelmed. Targeted evacuation of highest-risk zones is more effective.',correct:false},
+      {text:'Identify and evacuate highest-risk zones (soft soil areas, old buildings)',outcome:'✅ Targeted evacuation of vulnerable areas is the most effective first response. Old buildings on soft alluvial soils amplify shaking — as seen in the 1999 İzmit earthquake.',correct:true},
+      {text:'Wait for more certainty before acting',outcome:'⚠️ Waiting wastes precious preparation time. Even imperfect prediction allows life-saving preparation.',correct:false},
+      {text:'Issue public information only — let people decide',outcome:'⚠️ Inconsistent response likely. Vulnerable people least able to self-evacuate are often those at highest risk.',correct:false}
+    ]
+  },
+  {
+    q:'Post-earthquake: 30,000 people are displaced. How do you prioritise aid?',
+    options:[
+      {text:'Distribute aid equally to all affected areas',outcome:'⚠️ Equal distribution ignores varying needs. Areas with collapsed buildings need search-and-rescue first — not food aid.',correct:false},
+      {text:'Search-and-rescue first, then medical, then shelter',outcome:'✅ The international standard: save lives first (first 72hrs critical), treat injuries, then address longer-term needs. The "disaster cascade" must be managed in order.',correct:true},
+      {text:'Focus on economic recovery — repair infrastructure',outcome:'⚠️ Infrastructure repair is important but cannot be the first priority when people are still trapped under rubble.',correct:false},
+      {text:'Appeal for international aid and wait for it to arrive',outcome:'⚠️ International aid takes days to arrive. Local response capacity in the first 72hrs determines survival rates.',correct:false}
+    ]
+  },
+  {
+    q:'Long-term: How do you rebuild to reduce future earthquake risk?',
+    options:[
+      {text:'Rebuild quickly using existing designs to restore normality',outcome:'⚠️ "Build back same" guarantees the same casualties in the next event. The opportunity to improve building standards must be taken.',correct:false},
+      {text:'Enforce strict seismic building codes and relocate from highest-risk zones',outcome:'✅ Build back better — seismic codes, base isolators, and managed retreat from highest-risk areas. This is how Japan, New Zealand and Chile have dramatically reduced casualties over time.',correct:true},
+      {text:'Relocate the entire population away from the hazard zone',outcome:'⚠️ Full relocation is rarely feasible — economic, cultural, and political ties to place are powerful. Managed risk reduction is more realistic.',correct:false},
+      {text:'Build a wall around the highest-risk areas',outcome:'⚠️ Physical barriers cannot stop earthquake shaking. This misunderstands the nature of seismic hazard.',correct:false}
+    ]
+  }
+];
+
+let currentScenario = 0;
+let score = 0;
+let answered = false;
+
+function renderHazardGame() {
+  const s = HAZARD_SCENARIOS[currentScenario];
+  document.getElementById('hazard-game').innerHTML = `
+    <div class="card" style="margin-bottom:1rem">
+      <div class="card-title">Decision ${currentScenario+1} of ${HAZARD_SCENARIOS.length} — Score: ${score}/${currentScenario}</div>
+      <p style="font-size:14px;font-weight:600;color:var(--ink);margin-bottom:1rem;line-height:1.5">${s.q}</p>
+      <div class="decision-grid" id="decision-options"></div>
+      <div id="decision-feedback" style="display:none;margin-top:1rem"></div>
+      <div id="decision-next" style="display:none;margin-top:1rem">
+        <button onclick="nextScenario()" style="background:var(--green);color:#fff;border:none;border-radius:var(--radius-sm);padding:8px 20px;font-size:13px;font-weight:600;cursor:pointer">${currentScenario<HAZARD_SCENARIOS.length-1?'Next decision →':'See your result'}</button>
+      </div>
+    </div>`;
+
+  document.getElementById('decision-options').innerHTML = s.options.map((o,i)=>`
+    <button class="decision-btn" onclick="chooseOption(${i})">
+      <div class="db-title">${{'A':'A','B':'B','C':'C','D':'D'}[['A','B','C','D'][i]]}: ${o.text}</div>
+    </button>`).join('');
+  answered = false;
+}
+
+function chooseOption(idx) {
+  if (answered) return;
+  answered = true;
+  const s = HAZARD_SCENARIOS[currentScenario];
+  const opt = s.options[idx];
+  if (opt.correct) score++;
+  
+  document.querySelectorAll('.decision-btn').forEach((btn,i)=>{
+    if (i===idx) btn.classList.add(opt.correct?'selected':'wrong');
+    btn.style.cursor='default';
+  });
+  
+  const fb = document.getElementById('decision-feedback');
+  fb.style.display='block';
+  fb.innerHTML=`<div style="padding:1rem;background:${opt.correct?'var(--green-pale)':'#FEE2E2'};border-radius:var(--radius-md);border:1px solid ${opt.correct?'var(--green-mid)':'#EF4444'}"><div style="font-size:13px;line-height:1.6;color:var(--ink)">${opt.outcome}</div></div>`;
+  document.getElementById('decision-next').style.display='block';
+}
+
+function nextScenario() {
+  currentScenario++;
+  if (currentScenario >= HAZARD_SCENARIOS.length) {
+    document.getElementById('hazard-game').innerHTML=`
+      <div class="card" style="margin-bottom:1rem;border-left:4px solid var(--green-mid)">
+        <div class="hero-card-title">Result: ${score}/${HAZARD_SCENARIOS.length}</div>
+        <div class="hero-card-desc">${score===3?'Excellent! You made all three correct decisions. A well-managed emergency response like this (targeting vulnerable zones, prioritising search-and-rescue, building back better) is why Japan and New Zealand have dramatically reduced earthquake casualties over time.':score===2?'Good — two correct decisions. The key insight: targeted responses are more effective than blanket ones, and the first 72 hours of search-and-rescue are critical.':'Consider the key principle: effective hazard management requires understanding vulnerability (not just magnitude), prioritising life-saving in the first 72 hours, and building back better afterwards.'}</div>
+        <button onclick="restartGame()" style="background:var(--green);color:#fff;border:none;border-radius:var(--radius-sm);padding:8px 20px;font-size:13px;font-weight:600;cursor:pointer;margin-top:1rem">Try again</button>
+      </div>`;
+  } else {
+    renderHazardGame();
+  }
+}
+
+function restartGame() {
+  currentScenario=0; score=0; answered=false;
+  renderHazardGame();
+}
+
+// ===== PLACES =====
+const PLACES = [
+  {name:'Manchester',country:'UK',type:'Post-industrial regeneration',desc:'Once the world's largest cotton-spinning city, Manchester experienced severe deindustrialisation after 1970. The 1996 IRA bombing paradoxically accelerated regeneration. Now a service, digital, and cultural hub — but spatial inequality between city centre and peripheral estates persists.',factors:[{icon:'🏭',t:'Deindustrialisation',d:'Cotton mills and heavy industry collapsed 1970s-80s'},{icon:'🏟️',t:'Sport & culture',d:'Manchester United, City, and music scene create global profile'},{icon:'🏗️',t:'Urban Development Corp',d:'Salford Quays redevelopment transformed former docklands'},{icon:'⚠️',t:'Persistent inequality',d:'Moss Side and Ancoats remain deprived despite city-centre growth'}],color:'#3B82F6'},
+  {name:'Detroit',country:'USA',type:'Urban decline & shrinkage',desc:'Once the world's automotive capital, Detroit filed for the largest municipal bankruptcy in US history in 2013. Population fell from 1.8 million (1950) to under 700,000. Vast areas of abandoned housing create a "shrinking city" landscape. A cautionary tale about mono-industrial dependence.',factors:[{icon:'🚗',t:'Automotive collapse',d:'"Big Three" manufacturers lost market share to Japan/Germany'},{icon:'🏃',t:'White flight & suburbanisation',d:'Middle class left for suburbs post-1967 riots'},{icon:'💸',t:'Fiscal crisis',d:'Population loss destroyed tax base — city couldn't fund services'},{icon:'🌱',t:'Urban farming emerges',d:'Vacant lots converted to community gardens and farms'}],color:'#EF4444'},
+  {name:'Bilbao',country:'Spain',type:'Culture-led regeneration',desc:'The "Bilbao Effect": Frank Gehry's Guggenheim Museum (1997) transformed a declining Basque industrial city into a global cultural destination. Tourism revenue replaced lost industrial income. The model has been replicated worldwide — but critics question whether culture-led regeneration benefits existing residents.',factors:[{icon:'🎨',t:'Guggenheim Museum',d:'1.3 million visitors/year, generating €500m annual revenue'},{icon:'🚇',t:'Infrastructure investment',d:'New metro, airport, and waterfront park alongside museum'},{icon:'💼',t:'Service sector growth',d:'Tourism and finance replaced steel and shipbuilding'},{icon:'❓',t:'Contested success',d:'Has regeneration reached deprived barrios? Gentrification concerns'}],color:'#F59E0B'},
+  {name:'London Docklands',country:'UK',type:'Enterprise Zone regeneration',desc:'London's Docklands were the world's busiest port until containerisation made them obsolete in the 1960s-70s. The London Docklands Development Corporation (1981) used Enterprise Zone status to attract Canary Wharf financial district. Now home to HSBC, Barclays, and Credit Suisse — but original communities argue they were displaced.',factors:[{icon:'🚢',t:'Port closure',d:'Containerisation at Tilbury made inner docks obsolete'},{icon:'🏦',t:'Canary Wharf',d:'Major global financial centre built on former docks'},{icon:'🏘️',t:'Gentrification',d:'Original working-class communities priced out of regenerated areas'},{icon:'🚂',t:'DLR & Crossrail',d:'Transport investment crucial to attracting investment'}],color:'var(--green-mid)'}
+];
+
+function renderPlaces() {
+  document.getElementById('place-grid').innerHTML = PLACES.map(p=>`
+    <div class="place-card" style="--p-color:${p.color}">
+      <div class="place-name">${p.name}, ${p.country}</div>
+      <div class="place-type">${p.type}</div>
+      <div class="place-desc">${p.desc}</div>
+      <div class="place-factors">${p.factors.map(f=>`<div class="pf-item"><span class="pf-icon">${f.icon}</span><span class="pf-text"><strong>${f.t}:</strong> ${f.d}</span></div>`).join('')}</div>
+    </div>`).join('');
+}
+
+// ===== MIGRATION =====
+const MIGRATIONS = [
+  {route:'South Asia → UK',type:'economic',desc:'UK South Asian diaspora numbers 4 million. Arrived in waves: Windrush generation (1948-71), East African Asians (1972), and continued skilled migration. Remittances support families at origin. Cultural enrichment vs. political tensions around integration.',stats:[{l:'UK South Asian population',v:'4 million'},{l:'Remittances to India (2022)',v:'$100bn'},{l:'Visa category',v:'Economic/skilled'}],color:'#3B82F6'},
+  {route:'Sub-Saharan Africa → Europe',type:'forced',desc:'Complex mix of economic migrants and asylum seekers. Mediterranean crossing kills thousands annually. Causes: conflict (Somalia, Sudan, Libya), poverty, and climate change. EU-Turkey deal and UK Rwanda policy raise human rights concerns.',stats:[{l:'Mediterranean crossings 2023',v:'~280,000'},{l:'Deaths in crossing',v:'~3,000/year'},{l:'Top origins',v:'Syria, Afghanistan, Sudan'}],color:'#EF4444'},
+  {route:'Central America → USA',type:'forced',desc:'Driven by violence (El Salvador murder rate 50/100,000), poverty, and drought in the Northern Triangle (Guatemala, Honduras, El Salvador). US-Mexico border crossing deaths increasing. Climate change is a growing push factor as agricultural livelihoods fail.',stats:[{l:'US-Mexico encounters 2023',v:'2.4 million'},{l:'Unaccompanied minors',v:'~130,000/year'},{l:'Key push factor',v:'Violence & drought'}],color:'#F59E0B'},
+  {route:'Pacific Islands → Australia/NZ',type:'climate',desc:'Pacific Island nations face existential threat from sea level rise. Kiribati has purchased land in Fiji as contingency. Tuvalu signed agreement for Australians to take climate migrants. These are the world's first true climate refugees — with no protection under international law.',stats:[{l:'Kiribati highest point',v:'3m above sea level'},{l:'Tuvalu-Australia deal',v:'Signed 2023'},{l:'Legal protection',v:'None currently'}],color:'#10B981'},
+  {route:'Syria → Turkey/Europe',type:'forced',desc:'The Syrian civil war (2011-present) created 6.6 million refugees — one of the largest refugee crises since WWII. Turkey hosts 3.7 million — the world's largest refugee population. EU-Turkey deal (2016) reduced arrivals but raised human rights concerns about conditions in Turkey.',stats:[{l:'Syrian refugees globally',v:'6.6 million'},{l:'In Turkey',v:'3.7 million'},{l:'EU-Turkey deal year',v:'2016'}],color:'#A855F7'},
+  {route:'Bangladesh → Gulf States',type:'economic',desc:'Over 8 million Bangladeshis work abroad, primarily in Saudi Arabia and UAE as construction workers. Remittances ($22bn) exceed foreign direct investment. Working conditions in Gulf states have attracted international criticism — particularly during Qatar 2022 World Cup construction.',stats:[{l:'Bangladeshis abroad',v:'8 million+'},{l:'Remittances to Bangladesh',v:'$22bn/year'},{l:'Main destination',v:'Saudi Arabia, UAE'}],color:'#C9A84C'}
+];
+
+let migFilter = 'all';
+function filterMigration(btn, type) {
+  migFilter = type;
+  document.querySelectorAll('#p2-migration .filter-pill').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderMigration();
+}
+
+function renderMigration() {
+  const filtered = migFilter==='all' ? MIGRATIONS : MIGRATIONS.filter(m=>m.type===migFilter);
+  document.getElementById('migration-grid').innerHTML = filtered.map(m=>`
+    <div class="migration-card" style="--m-color:${m.color}">
+      <div class="mig-route">✈️ ${m.route}</div>
+      <div class="mig-type">${m.type.toUpperCase()}</div>
+      <div class="mig-desc">${m.desc}</div>
+      <div class="mig-stats">${m.stats.map(s=>`<span class="mig-stat" style="background:${m.color}18;color:${m.color};border:1px solid ${m.color}44"><strong>${s.l}:</strong> ${s.v}</span>`).join('')}</div>
+    </div>`).join('');
+}
+
+// ===== DISEASE =====
+const DISEASES = [
+  {name:'Malaria',type:'communicable',desc:'Parasitic disease spread by female Anopheles mosquitoes. 249 million cases in 2022, killing 608,000 — 76% of them children under 5. Predominantly affects sub-Saharan Africa. Poverty trap: keeps people ill, reducing productivity. Climate change is expanding the mosquito's range.',stats:[{l:'Cases (2022)',v:'249 million'},{l:'Deaths',v:'608,000'},{l:'Main region',v:'Sub-Saharan Africa'},{l:'Prevention',v:'Bed nets, drugs'}],color:'#EF4444'},
+  {name:'Tuberculosis (TB)',type:'communicable',desc:'Bacterial disease spread by airborne droplets. 10.6 million fell ill in 2022; 1.3 million died. Strongly associated with overcrowding and poverty. Drug-resistant TB (MDR-TB) is a growing crisis. Social determinants: TB rates in the UK are 10× higher in the most deprived areas.',stats:[{l:'Cases (2022)',v:'10.6 million'},{l:'Deaths',v:'1.3 million'},{l:'Key risk factor',v:'Overcrowding/poverty'},{l:'Treatment',v:'6-month antibiotic course'}],color:'#F59E0B'},
+  {name:'COVID-19',type:'communicable',desc:'SARS-CoV-2 pandemic (2019-present) caused 7+ million confirmed deaths globally. Exposed vast inequalities in health system capacity. Vaccine nationalism meant MEDCs secured supplies while LEDCs waited. Revealed how globalised travel creates near-instant global disease spread.',stats:[{l:'Confirmed deaths',v:'7+ million'},{l:'Vaccines administered',v:'13.5 billion'},{l:'MEDC vs LEDC vacc rate',v:'75% vs 23%'},{l:'Origin',v:'Wuhan, China 2019'}],color:'#A855F7'},
+  {name:'Cardiovascular disease',type:'non-communicable',desc:'Heart disease and stroke are the world's biggest killers — 18 million deaths/year. Originally a disease of wealthy nations, NCDs now kill more people in LEDCs. Risk factors: unhealthy diet, smoking, physical inactivity, alcohol — all shaped by marketing, poverty, and cultural norms.',stats:[{l:'Deaths/year',v:'18 million'},{l:'% of global deaths',v:'32%'},{l:'Main risk factors',v:'Diet, smoking, inactivity'},{l:'Trend',v:'Rising in LEDCs'}],color:'#EC4899'},
+  {name:'Type 2 Diabetes',type:'non-communicable',desc:'537 million adults live with diabetes globally (2022); expected to reach 783 million by 2045. Driven by processed food, sedentary lifestyles, and obesity. The "nutrition transition" as LEDCs urbanise and adopt Western diets is causing a diabetes epidemic. Ultra-processed food companies face growing scrutiny.',stats:[{l:'Adults with diabetes',v:'537 million'},{l:'Projected 2045',v:'783 million'},{l:'Fastest growth region',v:'South and SE Asia'},{l:'Key driver',v:'Nutrition transition'}],color:'#3B82F6'},
+  {name:'Cholera',type:'communicable',desc:'Acute diarrhoeal disease caused by contaminated water. A disease of poverty and poor sanitation. 2022-23 outbreak affected 30+ countries — the worst in a generation. Climate change and conflict disrupt water systems, creating ideal cholera conditions. Largely eliminated in MEDCs.',stats:[{l:'Countries affected 2022-23',v:'30+'},{l:'Case fatality rate',v:'25-50% if untreated'},{l:'Cause',v:'Vibrio cholerae bacteria'},{l:'Prevention',v:'Clean water & sanitation'}],color:'#0EA5E9'}
+];
+
+let diseaseFilter = 'all';
+function filterDisease(btn, type) {
+  diseaseFilter = type;
+  document.querySelectorAll('#p3-disease .filter-pill').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderDiseases();
+}
+
+function renderDiseases() {
+  const filtered = diseaseFilter==='all' ? DISEASES : DISEASES.filter(d=>d.type===diseaseFilter);
+  document.getElementById('disease-grid').innerHTML = filtered.map(d=>`
+    <div class="disease-card" style="--d-color:${d.color}">
+      <div class="disease-name">${d.name}</div>
+      <div class="disease-type" style="color:${d.color}">${{'communicable':'🦠 Communicable','non-communicable':'❤️ Non-communicable'}[d.type]}</div>
+      <div class="disease-desc">${d.desc}</div>
+      <div class="disease-stats">${d.stats.map(s=>`<div class="ds-item"><div class="ds-label">${s.l}</div><div class="ds-value">${s.v}</div></div>`).join('')}</div>
+    </div>`).join('');
+}
+
+// ===== INIT =====
+updateCoasts();
+renderLandforms();
+updateRichter();
+renderHazardGame();
+renderPlaces();
+renderMigration();
+renderDiseases();
+</script>
+</body>
+</html>
