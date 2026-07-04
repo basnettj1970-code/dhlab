@@ -1089,6 +1089,16 @@ function renderDiseases() {
     </div>`).join('');
 }
 
+
+function switchClimateTab(btn, tab) {
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('climate-data-section').style.display = tab==='data'?'block':'none';
+  document.getElementById('climate-eco-section').style.display = tab==='ecosystems'?'block':'none';
+  if(tab==='data') setTimeout(initClimateCharts, 50);
+  if(tab==='ecosystems') renderEcoSelector();
+}
+
 // ===== INIT =====
 updateCoasts();
 renderLandforms();
